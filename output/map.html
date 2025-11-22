@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_6a2743dddc03acb0e3ace9fbca6ce2cf {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_6a2743dddc03acb0e3ace9fbca6ce2cf" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_6a2743dddc03acb0e3ace9fbca6ce2cf = L.map(
+                "map_6a2743dddc03acb0e3ace9fbca6ce2cf",
+                {
+                    center: [51.5074, -0.1278],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 12,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_7d1c49a73d17722e4e23910da0f5ee71 = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_7d1c49a73d17722e4e23910da0f5ee71.addTo(map_6a2743dddc03acb0e3ace9fbca6ce2cf);
+        
+    
+            var marker_053bddcc88118bb88c48855832a0bf5c = L.marker(
+                [51.430645, -0.166314],
+                {
+  "radius": 5,
+}
+            ).addTo(map_6a2743dddc03acb0e3ace9fbca6ce2cf);
+        
+    
+        var icon_bbec3ef67245a0703de6cd4f9f1486be = L.icon({
+  "iconUrl": "data:image/png;base64,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",
+  "iconSize": [18, 27],
+});
+        
+    
+        var popup_1b0dcf6de2abd073678fec5326f58a21 = L.popup({
+  "maxWidth": 150,
+});
+
+        
+            
+                var html_65a324e3ccd3d80d5bebccb5d6b98451 = $(`<div id="html_65a324e3ccd3d80d5bebccb5d6b98451" style="width: 100.0%; height: 100.0%;">             <b>ID:</b> 17805951<br>             <b>Date added:</b> 2025-11-22<br>             <b>Score:</b> 15.6<br>             <b>Price:</b> 800<br>             <a href="https://www.spareroom.co.uk/flatshare/flatshare_detail.pl?flatshare_id=17805951&search_id=1397861655&city_id=&flatshare_type=offered&search_results=%2Fflatshare%2Findex.cgi%3Fsearch_id%3D1397861655%26offset%3D0%26sort_by%3Ddays_since_placed& target="_blank">View listing</a>             <br><img src="https://photos2.spareroom.co.uk/images/flatshare/listings/large/96/10/96108752.jpg" width="100"></div>`)[0];
+                popup_1b0dcf6de2abd073678fec5326f58a21.setContent(html_65a324e3ccd3d80d5bebccb5d6b98451);
+            
+        
+
+        marker_053bddcc88118bb88c48855832a0bf5c.bindPopup(popup_1b0dcf6de2abd073678fec5326f58a21)
+        ;
+
+        
+    
+    
+                marker_053bddcc88118bb88c48855832a0bf5c.setIcon(icon_bbec3ef67245a0703de6cd4f9f1486be);
+            
+    
+            var marker_0b28db566ed40b407ce1117b46361164 = L.marker(
+                [51.495611, -0.015161],
+                {
+  "radius": 5,
+}
+            ).addTo(map_6a2743dddc03acb0e3ace9fbca6ce2cf);
+        
+    
+        var icon_108d446ca67dad3c57c9493c26d72b03 = L.icon({
+  "iconUrl": "data:image/png;base64,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",
+  "iconSize": [18, 27],
+});
+        
+    
+        var popup_41bb862ba73bb215f2aed7c2b5cc3301 = L.popup({
+  "maxWidth": 150,
+});
+
+        
+            
+                var html_e8ca64d8c2d2f26e7d037a4eb41235ec = $(`<div id="html_e8ca64d8c2d2f26e7d037a4eb41235ec" style="width: 100.0%; height: 100.0%;">             <b>ID:</b> 18066805<br>             <b>Date added:</b> 2025-11-22<br>             <b>Score:</b> 20.0<br>             <b>Price:</b> 917<br>             <a href="https://www.spareroom.co.uk/flatshare/flatshare_detail.pl?flatshare_id=18066805&search_id=1397861655&city_id=&flatshare_type=offered&search_results=%2Fflatshare%2Findex.cgi%3Fsearch_id%3D1397861655%26offset%3D0%26sort_by%3Ddays_since_placed& target="_blank">View listing</a>             <br><img src="https://photos2.spareroom.co.uk/images/flatshare/listings/large/98/27/98278572.jpg" width="100"></div>`)[0];
+                popup_41bb862ba73bb215f2aed7c2b5cc3301.setContent(html_e8ca64d8c2d2f26e7d037a4eb41235ec);
+            
+        
+
+        marker_0b28db566ed40b407ce1117b46361164.bindPopup(popup_41bb862ba73bb215f2aed7c2b5cc3301)
+        ;
+
+        
+    
+    
+                marker_0b28db566ed40b407ce1117b46361164.setIcon(icon_108d446ca67dad3c57c9493c26d72b03);
+            
+    
+            var marker_4b897af928d76d561c04b00ab5b777d3 = L.marker(
+                [51.561579, -0.001208],
+                {
+  "radius": 5,
+}
+            ).addTo(map_6a2743dddc03acb0e3ace9fbca6ce2cf);
+        
+    
+        var icon_72a9897603d5d03a19b2768e94b8d7f7 = L.icon({
+  "iconUrl": "data:image/png;base64,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",
+  "iconSize": [18, 27],
+});
+        
+    
+        var popup_d1673c1ec1c4528c4ec72e67effc3f98 = L.popup({
+  "maxWidth": 150,
+});
+
+        
+            
+                var html_63bd81e038958ae15877b73dfe687d54 = $(`<div id="html_63bd81e038958ae15877b73dfe687d54" style="width: 100.0%; height: 100.0%;">             <b>ID:</b> 18066797<br>             <b>Date added:</b> 2025-11-22<br>             <b>Score:</b> 27.7<br>             <b>Price:</b> 300<br>             <a href="https://www.spareroom.co.uk/flatshare/flatshare_detail.pl?flatshare_id=18066797&search_id=1397861655&city_id=&flatshare_type=offered&search_results=%2Fflatshare%2Findex.cgi%3Fsearch_id%3D1397861655%26offset%3D0%26sort_by%3Ddays_since_placed& target="_blank">View listing</a>             <br><img src="https://photos2.spareroom.co.uk/images/flatshare/listings/large/98/27/98278518.jpg" width="100"></div>`)[0];
+                popup_d1673c1ec1c4528c4ec72e67effc3f98.setContent(html_63bd81e038958ae15877b73dfe687d54);
+            
+        
+
+        marker_4b897af928d76d561c04b00ab5b777d3.bindPopup(popup_d1673c1ec1c4528c4ec72e67effc3f98)
+        ;
+
+        
+    
+    
+                marker_4b897af928d76d561c04b00ab5b777d3.setIcon(icon_72a9897603d5d03a19b2768e94b8d7f7);
+            
+    
+            var marker_7371a09dab4e9ec9283be97533115312 = L.marker(
+                [51.582127, -0.077071],
+                {
+  "radius": 5,
+}
+            ).addTo(map_6a2743dddc03acb0e3ace9fbca6ce2cf);
+        
+    
+        var icon_de5c5bfaf6e059faed007e9e82eecdbd = L.icon({
+  "iconUrl": "data:image/png;base64,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",
+  "iconSize": [18, 27],
+});
+        
+    
+        var popup_9e61fb36d825a827bba10c641c014aee = L.popup({
+  "maxWidth": 150,
+});
+
+        
+            
+                var html_96fd356c6d4ec93bdcb04ddf15eaa8bb = $(`<div id="html_96fd356c6d4ec93bdcb04ddf15eaa8bb" style="width: 100.0%; height: 100.0%;">             <b>ID:</b> 17950648<br>             <b>Date added:</b> 2025-11-22<br>             <b>Score:</b> 17.0<br>             <b>Price:</b> 795<br>             <a href="https://www.spareroom.co.uk/flatshare/flatshare_detail.pl?flatshare_id=17950648&search_id=1397861655&city_id=&flatshare_type=offered&search_results=%2Fflatshare%2Findex.cgi%3Fsearch_id%3D1397861655%26offset%3D0%26sort_by%3Ddays_since_placed& target="_blank">View listing</a>             <br><img src="https://photos2.spareroom.co.uk/images/flatshare/listings/large/97/30/97306119.jpg" width="100"></div>`)[0];
+                popup_9e61fb36d825a827bba10c641c014aee.setContent(html_96fd356c6d4ec93bdcb04ddf15eaa8bb);
+            
+        
+
+        marker_7371a09dab4e9ec9283be97533115312.bindPopup(popup_9e61fb36d825a827bba10c641c014aee)
+        ;
+
+        
+    
+    
+                marker_7371a09dab4e9ec9283be97533115312.setIcon(icon_de5c5bfaf6e059faed007e9e82eecdbd);
+            
+    
+            var marker_4c9c3963bac060ed61f4b3edb53d605b = L.marker(
+                [51.586872, -0.09946],
+                {
+  "radius": 5,
+}
+            ).addTo(map_6a2743dddc03acb0e3ace9fbca6ce2cf);
+        
+    
+        var icon_e1c037b830e3107558c67001f2253472 = L.icon({
+  "iconUrl": "data:image/png;base64,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",
+  "iconSize": [18, 27],
+});
+        
+    
+        var popup_9bc6d4822134b7b3deb2d75f87119eb1 = L.popup({
+  "maxWidth": 150,
+});
+
+        
+            
+                var html_a9cf8768b4af6783c59d4ad3355f6729 = $(`<div id="html_a9cf8768b4af6783c59d4ad3355f6729" style="width: 100.0%; height: 100.0%;">             <b>ID:</b> 18066783<br>             <b>Date added:</b> 2025-11-22<br>             <b>Score:</b> 15.9<br>             <b>Price:</b> 850<br>             <a href="https://www.spareroom.co.uk/flatshare/flatshare_detail.pl?flatshare_id=18066783&search_id=1397861655&city_id=&flatshare_type=offered&search_results=%2Fflatshare%2Findex.cgi%3Fsearch_id%3D1397861655%26offset%3D0%26sort_by%3Ddays_since_placed& target="_blank">View listing</a>             <br><img src="https://photos2.spareroom.co.uk/images/flatshare/listings/large/98/27/98278359.jpg" width="100"></div>`)[0];
+                popup_9bc6d4822134b7b3deb2d75f87119eb1.setContent(html_a9cf8768b4af6783c59d4ad3355f6729);
+            
+        
+
+        marker_4c9c3963bac060ed61f4b3edb53d605b.bindPopup(popup_9bc6d4822134b7b3deb2d75f87119eb1)
+        ;
+
+        
+    
+    
+                marker_4c9c3963bac060ed61f4b3edb53d605b.setIcon(icon_e1c037b830e3107558c67001f2253472);
+            
+    
+            var marker_b14ca6f3661a49ab7ac330bb6ebcc72f = L.marker(
+                [51.467045, -0.101736],
+                {
+  "radius": 5,
+}
+            ).addTo(map_6a2743dddc03acb0e3ace9fbca6ce2cf);
+        
+    
+        var icon_2fd517ccc712a27a2b5d3eb8e37f0c60 = L.icon({
+  "iconUrl": "data:image/png;base64,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",
+  "iconSize": [18, 27],
+});
+        
+    
+        var popup_e7e363ffe87c36872457d4c77621da88 = L.popup({
+  "maxWidth": 150,
+});
+
+        
+            
+                var html_52a5c3171870e0192767bdb2905790ba = $(`<div id="html_52a5c3171870e0192767bdb2905790ba" style="width: 100.0%; height: 100.0%;">             <b>ID:</b> 18066770<br>             <b>Date added:</b> 2025-11-22<br>             <b>Score:</b> 16.0<br>             <b>Price:</b> 799<br>             <a href="https://www.spareroom.co.uk/flatshare/flatshare_detail.pl?flatshare_id=18066770&search_id=1397861655&city_id=&flatshare_type=offered&search_results=%2Fflatshare%2Findex.cgi%3Fsearch_id%3D1397861655%26offset%3D0%26sort_by%3Ddays_since_placed& target="_blank">View listing</a>             </div>`)[0];
+                popup_e7e363ffe87c36872457d4c77621da88.setContent(html_52a5c3171870e0192767bdb2905790ba);
+            
+        
+
+        marker_b14ca6f3661a49ab7ac330bb6ebcc72f.bindPopup(popup_e7e363ffe87c36872457d4c77621da88)
+        ;
+
+        
+    
+    
+                marker_b14ca6f3661a49ab7ac330bb6ebcc72f.setIcon(icon_2fd517ccc712a27a2b5d3eb8e37f0c60);
+            
+    
+            var marker_85f5a7cccede6bde7209e126a030ccec = L.marker(
+                [51.44913, -0.134142],
+                {
+  "radius": 5,
+}
+            ).addTo(map_6a2743dddc03acb0e3ace9fbca6ce2cf);
+        
+    
+        var icon_c4593dcb1001e032faf8b8f127439e26 = L.icon({
+  "iconUrl": "data:image/png;base64,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",
+  "iconSize": [18, 27],
+});
+        
+    
+        var popup_d2d49317f818943dceb163fe5eb23a23 = L.popup({
+  "maxWidth": 150,
+});
+
+        
+            
+                var html_6dda478044490cadb2efbc6acb0da6cb = $(`<div id="html_6dda478044490cadb2efbc6acb0da6cb" style="width: 100.0%; height: 100.0%;">             <b>ID:</b> 17732781<br>             <b>Date added:</b> 2025-11-22<br>             <b>Score:</b> 18.2<br>             <b>Price:</b> 500<br>             <a href="https://www.spareroom.co.uk/flatshare/flatshare_detail.pl?flatshare_id=17732781&search_id=1397861655&city_id=&flatshare_type=offered&search_results=%2Fflatshare%2Findex.cgi%3Fsearch_id%3D1397861655%26offset%3D0%26sort_by%3Ddays_since_placed& target="_blank">View listing</a>             <br><img src="https://photos2.spareroom.co.uk/images/flatshare/listings/large/95/48/95486310.jpg" width="100"></div>`)[0];
+                popup_d2d49317f818943dceb163fe5eb23a23.setContent(html_6dda478044490cadb2efbc6acb0da6cb);
+            
+        
+
+        marker_85f5a7cccede6bde7209e126a030ccec.bindPopup(popup_d2d49317f818943dceb163fe5eb23a23)
+        ;
+
+        
+    
+    
+                marker_85f5a7cccede6bde7209e126a030ccec.setIcon(icon_c4593dcb1001e032faf8b8f127439e26);
+            
+</script>
+</html>
