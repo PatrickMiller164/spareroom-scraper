@@ -1,7 +1,7 @@
 import folium
 from folium.features import CustomIcon
 from datetime import datetime
-from config import CREATE_MAP, favourites
+from config import CREATE_MAP, FAVOURITES
 
 
 class CreateMap:
@@ -34,7 +34,7 @@ class CreateMap:
 
     def filter_listings(self):
         self.today = datetime.today().date()
-        self.favourites = [x for x in self.rows if x["id"] in favourites]
+        self.favourites = [x for x in self.rows if x["id"] in FAVOURITES]
         self.old_good_listings = [
             x
             for x in self.rows

@@ -1,7 +1,7 @@
 import re
 from config import SCORE_WEIGHTINGS
 
-def normalise(x, min, max):
+def normalise(x: int, min: int, max: int) -> float:
     return 1 - ((x - min) / (max - min))
 
 def get_score_and_price(row):
@@ -87,7 +87,7 @@ def get_score_and_price(row):
     range_keys = {
         "commute_to_office": [20, 60],
         "commute_to_central": [20, 60],
-        "minimum_term": [1, 12],
+        "minimum_term": [0, 12],
         "total_#_rooms": [2, 6],
         "average_price": [700, 1000],
     }
@@ -97,7 +97,10 @@ def get_score_and_price(row):
         min = range_keys[key][0]
         max = range_keys[key][1]
 
-        score[key] = normalise(val, min, max)
+        if isinstance(val, int):
+            score[key] = normalise(val, min, max)
+        else:
+            score[key] = 0
 
     # Use relative weightings to calculate composite
     for key in score.keys():

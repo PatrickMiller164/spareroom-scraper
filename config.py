@@ -1,5 +1,5 @@
 MAIN = {
-    "use_with_database": True,
+    "use_with_database": False,
     "update_database": False,
     "headless": True,
     "number_of_pages": 1,
@@ -15,25 +15,7 @@ CREATE_MAP = {
     "min_score": 15,
 }
 
-favourites = [
-    "15488310",
-    "17907139",
-    "17904389",
-    "17910459",
-    "17046308",
-    "17909831",
-    "17907746",
-    "17905276",
-    "17915496",
-    "16128927",
-    "1377695252",
-    "1377695252",
-    "17921501",
-    "11544880",
-    "15955759",
-    "1376839644",
-    "1377526447",
-]
+FAVOURITES = []
 
 SCORE_WEIGHTINGS = {
     "direct_line_to_office": 1,

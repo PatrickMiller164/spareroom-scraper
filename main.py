@@ -1,10 +1,12 @@
 import polars as pl
 import pandas as pd
-from src.spareroomClasses import SpareRoom, RoomInfo
+from src.SpareRoom import SpareRoom
+from src.RoomInfo import RoomInfo
 from src.lists import final_cols, output_cols
 from src.logger_config import logger
 from src.get_score_and_price import get_score_and_price
 from src.get_commute_time import get_commute_time
+from src.utils import flush_print
 import pickle
 from datetime import datetime
 from src.create_map import CreateMap
@@ -41,7 +43,7 @@ def filter_for_new_listings_only(rows, listing_urls):
 def process_new_listings(listing_urls, x, rows):
     logger.info(f"Processing {len(listing_urls)} new listings")
     for i, url in enumerate(listing_urls, start=1):
-        print(f"\r{i}/{len(listing_urls)}. ", end="", flush=True)
+        flush_print(i, listing_urls)
         room = RoomInfo(url, x.page, domain)
         if (
             getattr(room, "room_1_bed_size", None) is not None

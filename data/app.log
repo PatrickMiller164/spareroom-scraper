@@ -13300,3 +13300,463 @@ Filename:           results/database.csv,
 2025-11-22 10:57:14,178 - INFO - Saved database to database.xlsx.
 
 2025-11-22 10:57:14,188 - INFO - STOPPING PROGRAM
+
+2025-11-22 12:31:18,884 - INFO -  STARTING PROGRAM
+                
+    Use with database:  True, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:31:18,885 - INFO - Database currently has 12 listings
+
+2025-11-22 12:31:19,648 - INFO - Launched browser.
+
+2025-11-22 12:31:21,588 - INFO - Searching Spareroom.
+
+2025-11-22 12:31:22,722 - INFO - Retrieved 11 listings
+
+2025-11-22 12:31:22,723 - INFO - Processing 10 new listings
+
+2025-11-22 12:31:26,545 - INFO - Getting final info for 22 listings
+
+2025-11-22 12:31:48,153 - INFO -  STARTING PROGRAM
+                
+    Use with database:  True, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:31:48,155 - INFO - Database currently has 12 listings
+
+2025-11-22 12:31:48,573 - INFO - Launched browser.
+
+2025-11-22 12:31:50,299 - INFO - Searching Spareroom.
+
+2025-11-22 12:31:51,318 - INFO - Retrieved 11 listings
+
+2025-11-22 12:31:51,319 - INFO - Processing 10 new listings
+
+2025-11-22 12:31:54,507 - INFO - Getting final info for 22 listings
+
+2025-11-22 12:33:34,983 - INFO -  STARTING PROGRAM
+                
+    Use with database:  True, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:33:34,986 - INFO - Database currently has 12 listings
+
+2025-11-22 12:33:35,430 - INFO - Launched browser.
+
+2025-11-22 12:33:37,173 - INFO - Searching Spareroom.
+
+2025-11-22 12:33:38,197 - INFO - Retrieved 11 listings
+
+2025-11-22 12:33:38,197 - INFO - Processing 10 new listings
+
+2025-11-22 12:33:41,386 - INFO - Getting final info for 22 listings
+
+2025-11-22 12:34:21,460 - INFO -  STARTING PROGRAM
+                
+    Use with database:  True, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:34:21,461 - INFO - Database currently has 12 listings
+
+2025-11-22 12:34:21,861 - INFO - Launched browser.
+
+2025-11-22 12:34:23,599 - INFO - Searching Spareroom.
+
+2025-11-22 12:34:24,682 - INFO - Retrieved 11 listings
+
+2025-11-22 12:34:24,682 - INFO - Processing 10 new listings
+
+2025-11-22 12:34:27,754 - INFO - Getting final info for 22 listings
+
+2025-11-22 12:36:37,787 - INFO -  STARTING PROGRAM
+                
+    Use with database:  True, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:36:37,788 - INFO - Database currently has 12 listings
+
+2025-11-22 12:36:38,202 - INFO - Launched browser.
+
+2025-11-22 12:36:39,998 - INFO - Searching Spareroom.
+
+2025-11-22 12:36:41,013 - INFO - Retrieved 11 listings
+
+2025-11-22 12:36:41,014 - INFO - Processing 10 new listings
+
+2025-11-22 12:36:44,182 - INFO - Getting final info for 22 listings
+
+2025-11-22 12:36:51,749 - INFO -  STARTING PROGRAM
+                
+    Use with database:  True, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:36:51,749 - INFO - Database currently has 12 listings
+
+2025-11-22 12:36:52,180 - INFO - Launched browser.
+
+2025-11-22 12:36:53,925 - INFO - Searching Spareroom.
+
+2025-11-22 12:36:54,917 - INFO - Retrieved 11 listings
+
+2025-11-22 12:36:54,917 - INFO - Processing 10 new listings
+
+2025-11-22 12:36:58,041 - INFO - Getting final info for 22 listings
+
+2025-11-22 12:42:32,537 - INFO -  STARTING PROGRAM
+                
+    Use with database:  True, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:42:32,538 - INFO - Database currently has 12 listings
+
+2025-11-22 12:42:33,206 - INFO - Launched browser.
+
+2025-11-22 12:42:35,128 - INFO - Searching Spareroom.
+
+2025-11-22 12:42:36,247 - INFO - Retrieved 11 listings
+
+2025-11-22 12:42:36,247 - INFO - Processing 10 new listings
+
+2025-11-22 12:42:39,869 - INFO - Getting final info for 22 listings
+
+2025-11-22 12:42:55,111 - INFO -  STARTING PROGRAM
+                
+    Use with database:  True, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:42:55,112 - INFO - Database currently has 12 listings
+
+2025-11-22 12:42:55,527 - INFO - Launched browser.
+
+2025-11-22 12:42:57,360 - INFO - Searching Spareroom.
+
+2025-11-22 12:42:58,435 - INFO - Retrieved 11 listings
+
+2025-11-22 12:42:58,435 - INFO - Processing 10 new listings
+
+2025-11-22 12:43:01,654 - INFO - Getting final info for 22 listings
+
+2025-11-22 12:43:19,127 - INFO -  STARTING PROGRAM
+                
+    Use with database:  True, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:43:19,127 - INFO - Database currently has 12 listings
+
+2025-11-22 12:43:19,629 - INFO - Launched browser.
+
+2025-11-22 12:43:21,445 - INFO - Searching Spareroom.
+
+2025-11-22 12:43:22,446 - INFO - Retrieved 11 listings
+
+2025-11-22 12:43:22,446 - INFO - Processing 10 new listings
+
+2025-11-22 12:43:26,032 - INFO - Getting final info for 22 listings
+
+2025-11-22 12:43:46,934 - INFO -  STARTING PROGRAM
+                
+    Use with database:  True, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:43:46,934 - INFO - Database currently has 12 listings
+
+2025-11-22 12:43:47,349 - INFO - Launched browser.
+
+2025-11-22 12:43:49,075 - INFO - Searching Spareroom.
+
+2025-11-22 12:43:50,106 - INFO - Retrieved 11 listings
+
+2025-11-22 12:43:50,106 - INFO - Processing 10 new listings
+
+2025-11-22 12:43:53,217 - INFO - Getting final info for 22 listings
+
+2025-11-22 12:45:09,123 - INFO -  STARTING PROGRAM
+                
+    Use with database:  True, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:45:09,123 - INFO - Database currently has 12 listings
+
+2025-11-22 12:45:09,577 - INFO - Launched browser.
+
+2025-11-22 12:45:11,405 - INFO - Searching Spareroom.
+
+2025-11-22 12:45:12,424 - INFO - Retrieved 11 listings
+
+2025-11-22 12:45:12,424 - INFO - Processing 10 new listings
+
+2025-11-22 12:45:15,643 - INFO - Getting final info for 22 listings
+
+2025-11-22 12:45:33,692 - INFO -  STARTING PROGRAM
+                
+    Use with database:  True, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:45:33,692 - INFO - Database currently has 12 listings
+
+2025-11-22 12:45:34,112 - INFO - Launched browser.
+
+2025-11-22 12:45:35,875 - INFO - Searching Spareroom.
+
+2025-11-22 12:45:36,884 - INFO - Retrieved 11 listings
+
+2025-11-22 12:45:36,884 - INFO - Processing 10 new listings
+
+2025-11-22 12:45:39,988 - INFO - Getting final info for 22 listings
+
+2025-11-22 12:46:16,199 - INFO -  STARTING PROGRAM
+                
+    Use with database:  True, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:46:16,200 - INFO - Database currently has 12 listings
+
+2025-11-22 12:46:16,605 - INFO - Launched browser.
+
+2025-11-22 12:46:18,364 - INFO - Searching Spareroom.
+
+2025-11-22 12:46:19,366 - INFO - Retrieved 11 listings
+
+2025-11-22 12:46:19,366 - INFO - Processing 10 new listings
+
+2025-11-22 12:46:22,728 - INFO - Getting final info for 22 listings
+
+2025-11-22 12:46:33,897 - INFO -  STARTING PROGRAM
+                
+    Use with database:  True, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:46:33,897 - INFO - Database currently has 12 listings
+
+2025-11-22 12:46:34,321 - INFO - Launched browser.
+
+2025-11-22 12:46:36,094 - INFO - Searching Spareroom.
+
+2025-11-22 12:46:37,124 - INFO - Retrieved 11 listings
+
+2025-11-22 12:46:37,124 - INFO - Processing 10 new listings
+
+2025-11-22 12:46:40,270 - INFO - Getting final info for 22 listings
+
+2025-11-22 12:46:44,604 - INFO - Processed all listings
+
+2025-11-22 12:46:44,606 - INFO - Database now has 22 listings
+
+2025-11-22 12:46:44,709 - INFO - Saved database to database.xlsx.
+
+2025-11-22 12:46:44,725 - INFO - STOPPING PROGRAM
+
+2025-11-22 12:48:18,293 - INFO -  STARTING PROGRAM
+                
+    Use with database:  True, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:48:18,293 - INFO - Database currently has 22 listings
+
+2025-11-22 12:48:18,715 - INFO - Launched browser.
+
+2025-11-22 12:48:20,585 - INFO - Searching Spareroom.
+
+2025-11-22 12:48:21,608 - INFO - Retrieved 11 listings
+
+2025-11-22 12:48:21,608 - INFO - Processing 0 new listings
+
+2025-11-22 12:48:21,608 - INFO - Getting final info for 22 listings
+
+2025-11-22 12:48:21,630 - INFO - Processed all listings
+
+2025-11-22 12:48:21,631 - INFO - Database now has 22 listings
+
+2025-11-22 12:48:21,665 - INFO - Saved database to database.xlsx.
+
+2025-11-22 12:48:21,679 - INFO - STOPPING PROGRAM
+
+2025-11-22 12:48:34,512 - INFO -  STARTING PROGRAM
+                
+    Use with database:  True, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:48:34,512 - INFO - Database currently has 22 listings
+
+2025-11-22 12:48:34,893 - INFO - Launched browser.
+
+2025-11-22 12:48:36,520 - INFO - Searching Spareroom.
+
+2025-11-22 12:48:37,515 - INFO - Retrieved 11 listings
+
+2025-11-22 12:48:37,515 - INFO - Processing 0 new listings
+
+2025-11-22 12:48:37,515 - INFO - Getting final info for 22 listings
+
+2025-11-22 12:48:37,535 - INFO - Processed all listings
+
+2025-11-22 12:48:37,536 - INFO - Database now has 22 listings
+
+2025-11-22 12:48:37,576 - INFO - Saved database to database.xlsx.
+
+2025-11-22 12:48:37,593 - INFO - STOPPING PROGRAM
+
+2025-11-22 12:49:50,664 - INFO -  STARTING PROGRAM
+                
+    Use with database:  False, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:49:51,038 - INFO - Launched browser.
+
+2025-11-22 12:49:52,744 - INFO - Searching Spareroom.
+
+2025-11-22 12:49:53,760 - INFO - Retrieved 11 listings
+
+2025-11-22 12:49:53,760 - INFO - Processing 11 new listings
+
+2025-11-22 12:49:57,476 - INFO - Getting final info for 11 listings
+
+2025-11-22 12:49:57,481 - INFO - Processed all listings
+
+2025-11-22 12:49:57,539 - INFO - Saved database to database.xlsx.
+
+2025-11-22 12:49:57,548 - INFO - STOPPING PROGRAM
+
+2025-11-22 12:50:57,305 - INFO -  STARTING PROGRAM
+                
+    Use with database:  False, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:50:57,684 - INFO - Launched browser.
+
+2025-11-22 12:50:59,378 - INFO - Searching Spareroom.
+
+2025-11-22 12:51:00,412 - INFO - Retrieved 11 listings
+
+2025-11-22 12:51:00,412 - INFO - Processing 11 new listings
+
+2025-11-22 12:51:04,035 - INFO - Getting final info for 11 listings
+
+2025-11-22 12:51:04,046 - INFO - Processed all listings
+
+2025-11-22 12:51:04,104 - INFO - Saved database to database.xlsx.
+
+2025-11-22 12:51:04,112 - INFO - STOPPING PROGRAM
+
+2025-11-22 12:55:19,202 - INFO -  STARTING PROGRAM
+                
+    Use with database:  False, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 12:55:19,597 - INFO - Launched browser.
+
+2025-11-22 12:55:21,590 - INFO - Searching Spareroom.
+
+2025-11-22 12:55:22,711 - INFO - Retrieved 11 listings
+
+2025-11-22 12:55:22,711 - INFO - Processing 11 new listings
+
+2025-11-22 12:55:26,417 - INFO - Getting final info for 11 listings
+
+2025-11-22 12:55:27,426 - INFO - Processed all listings
+
+2025-11-22 12:55:27,515 - INFO - Saved database to database.xlsx.
+
+2025-11-22 12:55:27,524 - INFO - STOPPING PROGRAM
+
+2025-11-22 13:02:19,559 - INFO -  STARTING PROGRAM
+                
+    Use with database:  False, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 13:02:19,941 - INFO - Launched browser.
+
+2025-11-22 13:02:21,692 - INFO - Searching Spareroom.
+
+2025-11-22 13:02:22,708 - INFO - Retrieved 11 listings
+
+2025-11-22 13:02:22,708 - INFO - Processing 11 new listings
+
+2025-11-22 13:02:26,570 - INFO - Getting final info for 11 listings
+
+2025-11-22 13:02:26,577 - INFO - Processed all listings
+
+2025-11-22 13:02:26,631 - INFO - Saved database to database.xlsx.
+
+2025-11-22 13:02:26,639 - INFO - STOPPING PROGRAM
