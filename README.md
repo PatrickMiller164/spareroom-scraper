@@ -1,1 +1,1 @@
-This is a test to see how we merge a branch.
+Merging locally and pushing instead
