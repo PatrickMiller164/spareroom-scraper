@@ -11,21 +11,42 @@ from src.create_map import CreateMap
 from config import MAIN
 from dataclasses import asdict
 
+
 DOMAIN = "https://www.spareroom.co.uk"
 FILE = "data/rooms.pkl"
 
 
-def filter_for_new_listings_only(rooms, listing_urls) -> list[str]:
+def filter_for_new_rooms_only(rooms, room_urls) -> list[str]:
     existing_ids = [row.id for row in rooms]
-    listing_ids = [url.split("=")[1].split("&")[0] for url in listing_urls]
-    return [url for (url, id) in zip(listing_urls, listing_ids) if id not in existing_ids]
+    room_ids = [url.split("=")[1].split("&")[0] for url in room_urls]
+    return [url for (url, id) in zip(room_urls, room_ids) if id not in existing_ids]
 
 
-def process_new_listings(listing_urls, x, rooms) -> list[Room]:
-    logger.info(f"Processing {len(listing_urls)} new listings")
+def exclude_expired_rooms(sr: SpareRoom, rooms: list[Room]) -> list[Room]:
+    valid_rows = []
 
-    for i, url in enumerate(listing_urls, start=1):
-        flush_print(i, listing_urls)
+    print()
+    for i, row in enumerate(rooms, start=1):
+        flush_print(i, rooms, "Checking room still exists")
+
+        sr.page.goto(row.url, timeout=10000)
+        url = sr.page.url
+        if row.url != url:
+            logger.warning(f"room {i} no longer found")
+            continue
+        valid_rows.append(row)
+    print()
+
+    return valid_rows
+
+
+def process_new_rooms(room_urls, x, rooms) -> list[Room]:
+    logger.info(f"Processing {len(room_urls)} new rooms")
+
+    print()
+    for i, url in enumerate(room_urls, start=1):
+        
+        flush_print(i, room_urls, "Processing new rooms")
 
         room_obj = GetRoomInfo(url, x.page, DOMAIN)
         room = room_obj.room
@@ -33,6 +54,7 @@ def process_new_listings(listing_urls, x, rooms) -> list[Room]:
 
         if room.room_1_bed_size is not None and room.location != "None, None":
             rooms.append(room)
+    print()
 
     return rooms
 
@@ -40,7 +62,7 @@ def process_new_listings(listing_urls, x, rooms) -> list[Room]:
 def create_and_export_dataframe(rooms, filename, min_rent) -> None:
     dict_list = [asdict(room) for room in rooms]
     df = (
-        pl.LazyFrame(dict_list)
+        pl.LazyFrame(dict_list, infer_schema_length=len(dict_list))
         .select(output_cols)
         .filter(pl.col("average_price") > int(min_rent))
         .sort("score", descending=True)
@@ -69,50 +91,41 @@ def create_and_export_dataframe(rooms, filename, min_rent) -> None:
     logger.info(f"Saved database to {filename}.")
 
 
-def main(use_with_database, update_database, headless, 
+def main(use_database, update_database, headless, 
          number_of_pages, min_rent, max_rent, filename) -> None:
     logger.info(f""" STARTING PROGRAM
                 
-    Use with database:  {use_with_database}, 
+    Use with database:  {use_database}, 
+    Update database:    {update_database},
     Number of pages:    {number_of_pages}, 
     Minimum rent:       {min_rent}, 
     Maximmum rent:      {max_rent},
     Filename:           {filename}
     """)
 
-    if not use_with_database and number_of_pages == 0:
+    if not use_database and number_of_pages == 0:
         raise ValueError(
             "Use database must be set to True or number_of_pages must be greater than 0"
         )
 
-    # Import database and idenitfy new listings
-    rooms = read_file(file=FILE) if use_with_database else []
+    # Import database and idenitfy new rooms
+    rooms = read_file(file=FILE) if use_database else []
 
-    # Search listings on Spareroom and process new listings
+    sr = SpareRoom(DOMAIN, headless)
+
+    # Exclude listings that have been taken off Spareroom
+    if update_database and use_database:
+        rooms = exclude_expired_rooms(sr, rooms)
+
+    # Search rooms on Spareroom and process new rooms
     if number_of_pages > 0:
-        sr = SpareRoom(DOMAIN, headless)
         sr.search_spareroom(min_rent, max_rent)
         sr.iterate_through_pages(number_of_pages)
-        listing_urls = sr.listing_urls
-        listing_urls = filter_for_new_listings_only(rooms, listing_urls)
-        rooms = process_new_listings(listing_urls, sr, rooms)
+        room_urls = filter_for_new_rooms_only(rooms, sr.room_urls)
+        rooms = process_new_rooms(room_urls, sr, rooms)
 
-    if update_database and use_with_database:
-        valid_rows = []
-        if not sr:
-            sr = SpareRoom(DOMAIN, headless)
-        for i, row in enumerate(rooms):
-
-            sr.page.goto(row.url, timeout=10000)
-            final_url = sr.page.url
-            if row.url != final_url:
-                logger.warning(f"listing no longer detected {i}")
-                continue
-            valid_rows.append(row)
-        rooms = valid_rows
-
-    # If using database, save new listings to database
-    if use_with_database:
+    # If using database, save new rooms to database
+    if use_database:
         write_file(file=FILE, rooms=rooms)
 
     # Create and export dataframe
@@ -124,7 +137,7 @@ def main(use_with_database, update_database, headless,
 
 if __name__ == "__main__":
     main(
-        use_with_database=MAIN["use_with_database"],
+        use_database=MAIN["use_database"],
         update_database=MAIN["update_database"],
         headless=MAIN["headless"],
         number_of_pages=MAIN["number_of_pages"],

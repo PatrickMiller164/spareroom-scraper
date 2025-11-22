@@ -1,8 +1,8 @@
 MAIN = {
-    "use_with_database": True,
-    "update_database": True,
+    "use_database": True,
+    "update_database": False,
     "headless": True,
-    "number_of_pages": 1,
+    "number_of_pages": 20,
     "min_rent": "200",
     "max_rent": "900",
     "filename": "database.xlsx",

@@ -7,7 +7,7 @@ class SpareRoom:
     def __init__(self, domain, headless):
         self.playwright = sync_playwright().start()
         self.domain = domain
-        self.listing_urls = []
+        self.room_urls = []
         self.soups = []
         self.launch_browser(headless)
 
@@ -61,10 +61,11 @@ class SpareRoom:
         # Sort by newest ads first
         self.page.select_option("#sort_by", value="days_since_placed")
 
-        # Get listing urls from first x pages
+        # Get room urls from first x pages
+        print()
         for i in range(1, number_of_pages + 1):
-            print(f"\rExtracted listing urls for page {i}", end="", flush=True)
-            self.get_listing_urls()
+            print(f"\rScanning page {i}", end="", flush=True)
+            self.get_room_urls()
 
             next_button = self.page.query_selector("#paginationNextPageLink")
             if not next_button:
@@ -78,18 +79,19 @@ class SpareRoom:
 
             next_page = self.domain + "/flatshare/" + href
             self.page.goto(next_page, wait_until="load")
+        print()
 
-        logger.info(f"Retrieved {len(self.listing_urls)} listings")
+        logger.info(f"Retrieved {len(self.room_urls)} rooms")
 
-    def get_listing_urls(self):
-        # Get listing urls for a page
+    def get_room_urls(self):
+        # Get room urls for a page
         self.page.wait_for_selector("ul.listing-results")
         html = self.page.content()
         soup = BeautifulSoup(html, "html.parser")
 
-        ul = soup.select_one("ul.listing-results")  # Get listings section
-        listings = ul.find_all("li")  # Get all listings
-        for i in listings:
-            listing_url = i.get("data-listing-url")  # Get URL of each listing
-            if listing_url is not None:
-                self.listing_urls.append(listing_url)
+        ul = soup.select_one("ul.listing-results")  # Get rooms section
+        rooms = ul.find_all("li")  # Get all rooms
+        for i in rooms:
+            room_url = i.get("data-listing-url")  # Get URL of each room
+            if room_url is not None:
+                self.room_urls.append(room_url)

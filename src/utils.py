@@ -3,8 +3,8 @@ from src.Room import Room
 import pickle
 from src.logger_config import logger
 
-def flush_print(i, list):
-    print(f"\r{i}/{len(list)}. ", end="", flush=True)
+def flush_print(i, list, msg):
+    print(f"\r{msg}: {i}/{len(list)}.", end="", flush=True)
 
 def normalise(x: int, min: int, max: int) -> float:
     return 1 - ((x - min) / (max - min))

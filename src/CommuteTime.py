@@ -4,34 +4,40 @@ from src.logger_config import logger
 from datetime import datetime, timedelta, time
 from dotenv import load_dotenv
 import os
-
 load_dotenv()
 
-api_key = os.getenv("GOOGLE_API_KEY")
-office_location_lat = os.getenv("OFFICE_LOCATION_LAT")
-office_location_long = os.getenv("OFFICE_LOCATION_LONG")
+API_KEY = os.getenv("GOOGLE_API_KEY")
+OFFICE_LAT = os.getenv("OFFICE_LOCATION_LAT")
+OFFICE_LONG = os.getenv("OFFICE_LOCATION_LONG")
+
+CENTRAL_LAT = os.getenv("CENTRAL_LAT")
+CENTRAL_LONG =os.getenv("CENTRAL_LONG")
+
+URL = "https://routes.googleapis.com/directions/v2:computeRoutes"
 
 
 class CommuteTime:
     def __init__(self, location, id):
-        self.API_KEY = api_key
-        self.office_location = (office_location_lat, office_location_long)
-        self.central = (51.5074, -0.1278)
-        self.room_location = tuple(map(float, location.split(",")))
-        self.url = "https://routes.googleapis.com/directions/v2:computeRoutes"
+        self.API_KEY = API_KEY
         self.id = id
         self.commute_to_office = None
         self.commute_to_central = None
 
+        location = tuple(map(float, location.split(",")))
+        ROOM_LAT=location[0]
+        ROOM_LONG=location[1]
+
         args = [
-            ('commute_to_office', self.room_location, self.office_location),
-            ('commute_to_central', self.room_location, self.central)
+            ('commute_to_office', (ROOM_LAT, ROOM_LONG), (OFFICE_LAT, OFFICE_LONG)),
+            ('commute_to_central', (ROOM_LAT, ROOM_LONG), (CENTRAL_LAT, CENTRAL_LONG))
         ]
         for (attr, room, destination) in args:
-            val = self.get_directions(room, destination)
+            response = self._get_response(room, destination)
+            val = self._parse_response(response)
             setattr(self, attr, val)
 
-    def get_directions(self, start, end):
+    def _get_response(self, start: tuple, end: tuple) -> requests.models.Response:
+
         headers = {
             "Content-Type": "application/json",
             "X-Goog-Api-Key": self.API_KEY,
@@ -47,14 +53,15 @@ class CommuteTime:
             },
             "travelMode": "TRANSIT",
             "transitPreferences": {"allowedTravelModes": "RAIL"},
-            "arrivalTime": f"{self.last_tuesday_9am()}",
+            "arrivalTime": f"{self._last_tuesday_9am()}",
             "computeAlternativeRoutes": False,
             "languageCode": "en-US",
             "units": "METRIC",
         }
 
-        response = requests.post(self.url, headers=headers, json=payload)
+        return requests.post(URL, headers=headers, json=payload)
 
+    def _parse_response(self, response: requests.models.Response) -> str:
         if response.status_code == 200:
             data = response.json()
             if "routes" not in data or not data["routes"]:
@@ -67,7 +74,7 @@ class CommuteTime:
             print(f"Request failed: {response.text}")
 
     @staticmethod
-    def last_tuesday_9am():
+    def _last_tuesday_9am() -> str:
         ref_date = datetime.today()
         offset = (ref_date.weekday() - 1) % 7  # 1 = Tuesday
         last_tuesday_date = ref_date - timedelta(days=offset)
