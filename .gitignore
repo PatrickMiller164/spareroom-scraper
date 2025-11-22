@@ -14,3 +14,6 @@ __pycache__
 .pytest_cache/
 
 .history/
+
+output/*
+!output/.gitkeep
