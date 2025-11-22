@@ -11,5 +11,6 @@ src/__pycache__
 src/test.py
 
 __pycache__
+.pytest_cache/
 
 .history/
