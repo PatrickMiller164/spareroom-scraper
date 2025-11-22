@@ -1,0 +1,12 @@
+.env
+
+ARCHIVE/
+
+ruff.toml
+.ruff_cache
+
+src/__pycache__
+
+__pycache__
+
+.history/
