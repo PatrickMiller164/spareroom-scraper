@@ -1,21 +1,21 @@
 import polars as pl
 import pandas as pd
 from src.SpareRoom import SpareRoom
-from src.RoomInfo import RoomInfo
-from src.lists import final_cols, output_cols
+from src.RoomInfo import GetRoomInfo, Room
+from src.lists import output_cols
 from src.logger_config import logger
 from src.get_score_and_price import get_score_and_price
 from src.get_commute_time import get_commute_time
 from src.utils import flush_print
 import pickle
-from datetime import datetime
 from src.create_map import CreateMap
 from config import MAIN
+from dataclasses import asdict
 
 domain = "https://www.spareroom.co.uk"
 
 
-def read_from_database():
+def read_from_database() -> list[Room]:
     try:
         with open("data/rows.pkl", "rb") as f:
             rows = pickle.load(f)
@@ -26,55 +26,51 @@ def read_from_database():
     return rows
 
 
-def write_to_database(rows):
+def write_to_database(rows) -> None:
     with open("data/rows.pkl", "wb") as f:
         pickle.dump(rows, f)
     logger.info(f"Database now has {len(rows)} listings")
 
 
-def filter_for_new_listings_only(rows, listing_urls):
-    existing_ids = [row["id"] for row in rows]
+def filter_for_new_listings_only(rows, listing_urls) -> list[str]:
+    existing_ids = [row.id for row in rows]
     listing_ids = [url.split("=")[1].split("&")[0] for url in listing_urls]
-    return [
-        url for (url, id) in zip(listing_urls, listing_ids) if id not in existing_ids
-    ]
+    return [url for (url, id) in zip(listing_urls, listing_ids) if id not in existing_ids]
 
 
-def process_new_listings(listing_urls, x, rows):
+def process_new_listings(listing_urls, x, rows) -> list[Room]:
     logger.info(f"Processing {len(listing_urls)} new listings")
     for i, url in enumerate(listing_urls, start=1):
         flush_print(i, listing_urls)
-        room = RoomInfo(url, x.page, domain)
-        if (
-            getattr(room, "room_1_bed_size", None) is not None
-            and getattr(room, "location", None) != "None, None"
-        ):
-            rows.append({col: getattr(room, col, None) for col in final_cols})
+        room_obj = GetRoomInfo(url, x.page, domain)
+        room = room_obj.room
+        if room.room_1_bed_size is not None and room.location != "None, None":
+            rows.append(room)
+            var = room.garden_or_patio
+            #print(var, type(var))
     return rows
 
 
-def get_final_info_for_all_listings(rows):
+def get_final_info_for_all_listings(rows: list[Room]) -> list[Room]:
     # Final updates plus gettting score, average price and commute times
     logger.info(f"Getting final info for {len(rows)} listings")
     for i, row in enumerate(rows, start=1):
-        print(f"\r{i}/{len(rows)}. ", end="", flush=True)
-        if "date_added" not in row.keys():
-            row["date_added"] = datetime.today().date()
-        if row["#_flatmates"] is None:
-            row["#_flatmates"] = 0
-        if row["total_#_rooms"] is None:
-            row["total_#_rooms"] = 1
-        if row["location"] is not None and row["id"] is not None:
-            commutes = get_commute_time(row["location"], row["id"])
-            row["commute_to_office"] = commutes.commute_to_office
-            row["commute_to_central"] = commutes.commute_to_central
-        row["score"], row["average_price"] = get_score_and_price(row)
+        flush_print(i, rows)
+
+        if row.location is not None and row.id is not None:
+            commutes = get_commute_time(row.location, row.id)
+            row.commute_to_office = commutes.commute_to_office
+            row.commute_to_central = commutes.commute_to_central
+
+        row.score, row.average_price = get_score_and_price(row)
+
     return rows
 
 
-def create_and_export_dataframe(rows, filename, min_rent):
+def create_and_export_dataframe(rows, filename, min_rent) -> None:
+    dict_list = [asdict(room) for room in rows]
     df = (
-        pl.LazyFrame(rows)
+        pl.LazyFrame(dict_list)
         .select(output_cols)
         .filter(pl.col("average_price") > int(min_rent))
         .sort("score", descending=True)
@@ -103,15 +99,8 @@ def create_and_export_dataframe(rows, filename, min_rent):
     logger.info(f"Saved database to {filename}.")
 
 
-def main(
-    use_with_database,
-    update_database,
-    headless,
-    number_of_pages,
-    min_rent,
-    max_rent,
-    filename,
-):
+def main(use_with_database, update_database, headless, 
+         number_of_pages, min_rent, max_rent, filename) -> None:
     logger.info(f""" STARTING PROGRAM
                 
     Use with database:  {use_with_database}, 
@@ -140,11 +129,13 @@ def main(
 
     if update_database and use_with_database:
         valid_rows = []
-        y = SpareRoom(domain, headless)
+        if not sr:
+            sr = SpareRoom(domain, headless)
         for i, row in enumerate(rows):
-            y.page.goto(row["url"], timeout=10000)
-            final_url = y.page.url
-            if row["url"] != final_url:
+
+            sr.page.goto(row.url, timeout=10000)
+            final_url = sr.page.url
+            if row.url != final_url:
                 logger.warning(f"listing no longer detected {i}")
                 continue
             valid_rows.append(row)

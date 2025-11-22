@@ -1,5 +1,5 @@
 import pytest
-from src.get_score_and_price import normalise
+from src.utils import normalise
 
 @pytest.mark.parametrize(
     "input, expected",

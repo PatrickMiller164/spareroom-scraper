@@ -1,5 +1,5 @@
 MAIN = {
-    "use_with_database": False,
+    "use_with_database": True,
     "update_database": False,
     "headless": True,
     "number_of_pages": 1,
@@ -22,12 +22,12 @@ SCORE_WEIGHTINGS = {
     "commute_to_office": 5,
     "commute_to_central": 4,
     "minimum_term": 1,
-    "bills_included?": 4,
+    "bills_included": 4,
     "broadband_included": 1,
-    "garden/patio": 1,
+    "garden_or_patio": 1,
     "living_room": 3,
-    "balcony/rooftop_terrace": 1,
-    "total_#_rooms": 2,
+    "balcony_or_rooftop_terrace": 1,
+    "total_number_of_rooms": 2,
     "gender": 1,
     "average_price": 5,
 }

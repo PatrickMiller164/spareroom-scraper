@@ -1,8 +1,6 @@
 import re
 from config import SCORE_WEIGHTINGS
-
-def normalise(x: int, min: int, max: int) -> float:
-    return 1 - ((x - min) / (max - min))
+from src.utils import normalise
 
 def get_score_and_price(row):
     # Get metrics from row dictionary
@@ -11,13 +9,13 @@ def get_score_and_price(row):
         "commute_to_office",
         "commute_to_central",
         "minimum_term",
-        "bills_included?",
+        "bills_included",
         "broadband_included",
         "furnishings",
-        "garden/patio",
+        "garden_or_patio",
         "living_room",
-        "balcony/rooftop_terrace",
-        "total_#_rooms",
+        "balcony_or_rooftop_terrace",
+        "total_number_of_rooms",
         "gender",
         "room_1_price_pcm",
         "room_2_price_pcm",
@@ -26,7 +24,8 @@ def get_score_and_price(row):
     ]
     dic = {}
     for metric in metrics:
-        dic[metric] = row.get(metric, None)
+        dic[metric] = getattr(row, metric, None)
+        #dic[metric] = row.get(metric, None)
 
     # Get number from string
     price_keys = [
@@ -37,7 +36,7 @@ def get_score_and_price(row):
         "commute_to_office",
         "commute_to_central",
         "minimum_term",
-        "total_#_rooms",
+        "total_number_of_rooms",
     ]
     prices = []
     for i in price_keys:
@@ -65,7 +64,7 @@ def get_score_and_price(row):
     for key in dic.keys():
         if key == "direct_line_to_office":
             score[key] = int(dic[key] is True)
-        elif key == "bills_included?":
+        elif key == "bills_included":
             if dic[key] == "Yes":
                 score[key] = 1
             elif dic[key] == "Some":
@@ -74,11 +73,11 @@ def get_score_and_price(row):
                 score[key] = 0
         elif key == "broadband_included":
             score[key] = int(dic[key] == "Yes")
-        elif key == "garden/patio":
+        elif key == "garden_or_patio":
             score[key] = int(dic[key] == "Yes")
         elif key == "living_room":
             score[key] = int(dic[key] == "shared" or dic[key] == "own")
-        elif key == "balcony/rooftop_terrace":
+        elif key == "balcony_or_rooftop_terrace":
             score[key] = int(dic[key] == "Yes")
         elif key == "gender":
             score[key] = int(dic[key] != "Females preferred")
@@ -88,7 +87,7 @@ def get_score_and_price(row):
         "commute_to_office": [20, 60],
         "commute_to_central": [20, 60],
         "minimum_term": [0, 12],
-        "total_#_rooms": [2, 6],
+        "total_number_of_rooms": [2, 6],
         "average_price": [700, 1000],
     }
     for key in range_keys.keys():

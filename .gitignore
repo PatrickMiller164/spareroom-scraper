@@ -6,6 +6,7 @@ ruff.toml
 .ruff_cache
 
 src/__pycache__
+src/test.py
 
 __pycache__
 
