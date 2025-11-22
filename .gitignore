@@ -2,7 +2,8 @@
 
 ARCHIVE/
 
-data/app.log
+data/*
+!data/.gitkeep
 
 ruff.toml
 .ruff_cache
