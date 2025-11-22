@@ -2,6 +2,8 @@
 
 ARCHIVE/
 
+data/app.log
+
 ruff.toml
 .ruff_cache
 
