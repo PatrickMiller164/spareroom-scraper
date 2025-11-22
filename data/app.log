@@ -13760,3 +13760,28 @@ Filename:           results/database.csv,
 2025-11-22 13:02:26,631 - INFO - Saved database to database.xlsx.
 
 2025-11-22 13:02:26,639 - INFO - STOPPING PROGRAM
+
+2025-11-22 13:06:00,223 - INFO -  STARTING PROGRAM
+                
+    Use with database:  False, 
+    Number of pages:    1, 
+    Minimum rent:       200, 
+    Maximmum rent:      900,
+    Filename:           database.xlsx
+    
+
+2025-11-22 13:06:00,604 - INFO - Launched browser.
+
+2025-11-22 13:06:02,371 - INFO - Searching Spareroom.
+
+2025-11-22 13:06:03,455 - INFO - Retrieved 11 listings
+
+2025-11-22 13:06:03,456 - INFO - Processing 11 new listings
+
+2025-11-22 13:06:07,107 - INFO - Getting final info for 11 listings
+
+2025-11-22 13:06:07,112 - INFO - Processed all listings
+
+2025-11-22 13:06:07,172 - INFO - Saved database to database.xlsx.
+
+2025-11-22 13:06:07,179 - INFO - STOPPING PROGRAM

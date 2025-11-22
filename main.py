@@ -131,12 +131,12 @@ def main(
 
     # Search listings on Spareroom and process new listings
     if number_of_pages > 0:
-        x = SpareRoom(domain, headless)
-        x.search_spareroom(min_rent, max_rent)
-        x.iterate_through_pages(number_of_pages)
-        listing_urls = x.listing_urls
+        sr = SpareRoom(domain, headless)
+        sr.search_spareroom(min_rent, max_rent)
+        sr.iterate_through_pages(number_of_pages)
+        listing_urls = sr.listing_urls
         listing_urls = filter_for_new_listings_only(rows, listing_urls)
-        rows = process_new_listings(listing_urls, x, rows)
+        rows = process_new_listings(listing_urls, sr, rows)
 
     if update_database and use_with_database:
         valid_rows = []
