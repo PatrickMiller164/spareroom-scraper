@@ -2,7 +2,7 @@ import folium
 from folium.features import CustomIcon
 from datetime import datetime
 from config import CREATE_MAP, FAVOURITES
-from src.RoomInfo import Room
+from src.Room import Room
 
 
 class CreateMap:
@@ -12,15 +12,9 @@ class CreateMap:
             location=self.map_center, tiles="Cartodb Positron", zoom_start=12
         )
         self.rows = rows
-        self.blue_icon = (
-            "/Users/patrickmiller/Coding/VSCode/spareroom/assets/marker-icon-blue.png"
-        )
-        self.grey_icon = (
-            "/Users/patrickmiller/Coding/VSCode/spareroom/assets/marker-icon-grey.png"
-        )
-        self.yellow_icon = (
-            "/Users/patrickmiller/Coding/VSCode/spareroom/assets/marker-icon-yellow.png"
-        )
+        self.blue_icon = ("assets/marker-icon-blue.png")
+        self.grey_icon = ("assets/marker-icon-grey.png")
+        self.yellow_icon = ("assets/marker-icon-yellow.png")
 
         self.filter_listings()
 

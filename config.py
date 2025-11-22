@@ -1,6 +1,6 @@
 MAIN = {
     "use_with_database": True,
-    "update_database": False,
+    "update_database": True,
     "headless": True,
     "number_of_pages": 1,
     "min_rent": "200",

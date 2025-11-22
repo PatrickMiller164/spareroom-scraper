@@ -1,74 +1,44 @@
 import polars as pl
 import pandas as pd
 from src.SpareRoom import SpareRoom
-from src.RoomInfo import GetRoomInfo, Room
+from src.RoomInfo import GetRoomInfo
+from src.Room import Room
 from src.lists import output_cols
 from src.logger_config import logger
 from src.get_score_and_price import get_score_and_price
-from src.get_commute_time import get_commute_time
-from src.utils import flush_print
-import pickle
+from src.utils import flush_print, read_file, write_file
 from src.create_map import CreateMap
 from config import MAIN
 from dataclasses import asdict
 
-domain = "https://www.spareroom.co.uk"
+DOMAIN = "https://www.spareroom.co.uk"
+FILE = "data/rooms.pkl"
 
 
-def read_from_database() -> list[Room]:
-    try:
-        with open("data/rows.pkl", "rb") as f:
-            rows = pickle.load(f)
-    except FileNotFoundError:
-        rows = []
-
-    logger.info(f"Database currently has {len(rows)} listings")
-    return rows
-
-
-def write_to_database(rows) -> None:
-    with open("data/rows.pkl", "wb") as f:
-        pickle.dump(rows, f)
-    logger.info(f"Database now has {len(rows)} listings")
-
-
-def filter_for_new_listings_only(rows, listing_urls) -> list[str]:
-    existing_ids = [row.id for row in rows]
+def filter_for_new_listings_only(rooms, listing_urls) -> list[str]:
+    existing_ids = [row.id for row in rooms]
     listing_ids = [url.split("=")[1].split("&")[0] for url in listing_urls]
     return [url for (url, id) in zip(listing_urls, listing_ids) if id not in existing_ids]
 
 
-def process_new_listings(listing_urls, x, rows) -> list[Room]:
+def process_new_listings(listing_urls, x, rooms) -> list[Room]:
     logger.info(f"Processing {len(listing_urls)} new listings")
+
     for i, url in enumerate(listing_urls, start=1):
         flush_print(i, listing_urls)
-        room_obj = GetRoomInfo(url, x.page, domain)
+
+        room_obj = GetRoomInfo(url, x.page, DOMAIN)
         room = room_obj.room
+        room.score, room.average_price = get_score_and_price(room)
+
         if room.room_1_bed_size is not None and room.location != "None, None":
-            rows.append(room)
-            var = room.garden_or_patio
-            #print(var, type(var))
-    return rows
+            rooms.append(room)
+
+    return rooms
 
 
-def get_final_info_for_all_listings(rows: list[Room]) -> list[Room]:
-    # Final updates plus gettting score, average price and commute times
-    logger.info(f"Getting final info for {len(rows)} listings")
-    for i, row in enumerate(rows, start=1):
-        flush_print(i, rows)
-
-        if row.location is not None and row.id is not None:
-            commutes = get_commute_time(row.location, row.id)
-            row.commute_to_office = commutes.commute_to_office
-            row.commute_to_central = commutes.commute_to_central
-
-        row.score, row.average_price = get_score_and_price(row)
-
-    return rows
-
-
-def create_and_export_dataframe(rows, filename, min_rent) -> None:
-    dict_list = [asdict(room) for room in rows]
+def create_and_export_dataframe(rooms, filename, min_rent) -> None:
+    dict_list = [asdict(room) for room in rooms]
     df = (
         pl.LazyFrame(dict_list)
         .select(output_cols)
@@ -116,22 +86,22 @@ def main(use_with_database, update_database, headless,
         )
 
     # Import database and idenitfy new listings
-    rows = read_from_database() if use_with_database else []
+    rooms = read_file(file=FILE) if use_with_database else []
 
     # Search listings on Spareroom and process new listings
     if number_of_pages > 0:
-        sr = SpareRoom(domain, headless)
+        sr = SpareRoom(DOMAIN, headless)
         sr.search_spareroom(min_rent, max_rent)
         sr.iterate_through_pages(number_of_pages)
         listing_urls = sr.listing_urls
-        listing_urls = filter_for_new_listings_only(rows, listing_urls)
-        rows = process_new_listings(listing_urls, sr, rows)
+        listing_urls = filter_for_new_listings_only(rooms, listing_urls)
+        rooms = process_new_listings(listing_urls, sr, rooms)
 
     if update_database and use_with_database:
         valid_rows = []
         if not sr:
-            sr = SpareRoom(domain, headless)
-        for i, row in enumerate(rows):
+            sr = SpareRoom(DOMAIN, headless)
+        for i, row in enumerate(rooms):
 
             sr.page.goto(row.url, timeout=10000)
             final_url = sr.page.url
@@ -139,19 +109,15 @@ def main(use_with_database, update_database, headless,
                 logger.warning(f"listing no longer detected {i}")
                 continue
             valid_rows.append(row)
-        rows = valid_rows
-
-    # Get info for all listings
-    rows = get_final_info_for_all_listings(rows)
-    logger.info("Processed all listings")
+        rooms = valid_rows
 
     # If using database, save new listings to database
     if use_with_database:
-        write_to_database(rows)
+        write_file(file=FILE, rooms=rooms)
 
     # Create and export dataframe
-    create_and_export_dataframe(rows, filename, min_rent)
-    CreateMap(rows)
+    create_and_export_dataframe(rooms, filename, min_rent)
+    CreateMap(rooms)
 
     logger.info("STOPPING PROGRAM")
 

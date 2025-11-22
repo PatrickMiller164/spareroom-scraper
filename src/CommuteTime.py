@@ -12,7 +12,7 @@ office_location_lat = os.getenv("OFFICE_LOCATION_LAT")
 office_location_long = os.getenv("OFFICE_LOCATION_LONG")
 
 
-class get_commute_time:
+class CommuteTime:
     def __init__(self, location, id):
         self.API_KEY = api_key
         self.office_location = (office_location_lat, office_location_long)
@@ -22,42 +22,14 @@ class get_commute_time:
         self.id = id
         self.commute_to_office = None
         self.commute_to_central = None
-        self.get_times()
 
-    def get_times(self):
-        # If dict exists, load dict else create dict
-        try:
-            with open("data/commutes_dic.json", "r") as f:
-                dic = json.load(f)
-        except FileNotFoundError:
-            dic = {}
-        except json.JSONDecodeError:
-            dic = {}
-
-        # If ID in dict, retrieve commute time from dict, else send reqeuest to Routes API
-        if self.id not in dic.keys():
-            dic[self.id] = [None, None]
-
-        # Getting commute_to_office
-        try:
-            self.commute_to_office = dic[self.id][0] or self.get_directions(
-                self.room_location, self.office_location
-            )
-            dic[self.id][0] = self.commute_to_office
-        except Exception as e:
-            logger.warning(e)
-
-        # Getting commute_to_central
-        try:
-            self.commute_to_central = dic[self.id][1] or self.get_directions(
-                self.room_location, self.central
-            )
-            dic[self.id][1] = self.commute_to_central
-        except Exception as e:
-            logger.warning(e)
-
-        with open("data/commutes_dic.json", "w") as f:
-            json.dump(dic, f, indent=4)
+        args = [
+            ('commute_to_office', self.room_location, self.office_location),
+            ('commute_to_central', self.room_location, self.central)
+        ]
+        for (attr, room, destination) in args:
+            val = self.get_directions(room, destination)
+            setattr(self, attr, val)
 
     def get_directions(self, start, end):
         headers = {

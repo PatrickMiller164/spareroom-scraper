@@ -2,56 +2,11 @@ from bs4 import BeautifulSoup
 import re
 from src.logger_config import logger
 from src.lists import jubilee_stations, elizabeth_line_stations
-from datetime import datetime
-from dataclasses import dataclass, fields
+from dataclasses import fields
 from src.utils import clean_string
+from src.CommuteTime import CommuteTime
+from src.Room import Room
 from pprint import pprint
-
-@dataclass
-class Room:
-    url: str = None
-    id: str = None
-    date_added: datetime = datetime.today().date()
-    title: str = None
-    type: str = None
-    available_all_week: bool = None
-    area: str = None
-    postcode: str = None
-    location: str = None
-    nearest_station: str = None
-    direct_line_to_office: bool = None
-    commute_to_office: str = None
-    commute_to_central: str = None
-    score: str = None
-    average_price: str = None
-    available: str = None
-    minimum_term: str = None
-    maximum_term: str = None
-    bills_included: str = None
-    broadband_included: str = None
-    furnishings: str = None
-    garden_or_patio: str = None
-    living_room: str = None
-    balcony_or_roof_terrace: str = None
-    number_of_flatmates: int = None
-    total_number_of_rooms: int = None
-    occupation: str = None
-    gender: str = None
-    min_age: str = None
-    max_age: str = None
-    room_1_bed_size: str = None
-    room_1_price_pcm: str = None
-    room_1_deposit: str = None
-    room_2_bed_size: str = None
-    room_2_price_pcm: str = None
-    room_2_deposit: str = None
-    room_3_bed_size: str = None
-    room_3_price_pcm: str = None
-    room_3_deposit: str = None
-    room_4_bed_size: str = None
-    room_4_price_pcm: str = None
-    room_4_deposit: str = None
-    image_url: str = None
 
 class GetRoomInfo:
     room: Room
@@ -68,8 +23,7 @@ class GetRoomInfo:
             "id": self.id,
             "title": self._get_title(),
             "available_all_week": self._get_ul_feature_list(),
-            "image_url": self._get_image_url(),
-            "location": self._get_location_string()
+            "image_url": self._get_image_url()
         }
 
         # Get key features
@@ -83,6 +37,11 @@ class GetRoomInfo:
 
         station = room_data['nearest_station']
         room_data['direct_line_to_office'] = self._check_station(station)
+
+        room_data['location'] = self._get_location_string()
+        commutes = CommuteTime(room_data['location'], self.id)
+        room_data['commute_to_office'] = commutes.commute_to_office
+        room_data['commute_to_central'] = commutes.commute_to_central
 
         # Keep only valid keys and create Room dataclass object
         valid_keys = {f.name for f in fields(Room)}
