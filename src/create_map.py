@@ -58,10 +58,7 @@ class CreateMap:
             url = listing["url"]
             id = listing["id"]
             date_added = listing["date_added"]
-            try:
-                image_url = listing["image_url"]
-            except:
-                image_url = None
+            image_url = listing.get("image_url") or None
 
             popup_html = f"""
             <b>ID:</b> {id}<br>

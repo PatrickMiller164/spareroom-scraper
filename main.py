@@ -17,9 +17,10 @@ def read_from_database():
     try:
         with open("data/rows.pkl", "rb") as f:
             rows = pickle.load(f)
-        logger.info(f"Database currently has {len(rows)} listings")
-    except:
+    except FileNotFoundError:
         rows = []
+
+    logger.info(f"Database currently has {len(rows)} listings")
     return rows
 
 

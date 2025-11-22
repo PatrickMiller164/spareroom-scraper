@@ -29,7 +29,9 @@ class get_commute_time:
         try:
             with open("data/commutes_dic.json", "r") as f:
                 dic = json.load(f)
-        except:
+        except FileNotFoundError:
+            dic = {}
+        except json.JSONDecodeError:
             dic = {}
 
         # If ID in dict, retrieve commute time from dict, else send reqeuest to Routes API

@@ -1,6 +1,8 @@
 import re
 from config import SCORE_WEIGHTINGS
 
+def normalise(x, min, max):
+    return 1 - ((x - min) / (max - min))
 
 def get_score_and_price(row):
     # Get metrics from row dictionary
@@ -49,7 +51,7 @@ def get_score_and_price(row):
                     prices.append(number)
                 else:
                     dic[i] = number
-        except:
+        except (KeyError, TypeError, ValueError):
             pass
         if "price_pcm" in i:
             dic.pop(i, None)
@@ -90,12 +92,12 @@ def get_score_and_price(row):
         "average_price": [700, 1000],
     }
     for key in range_keys.keys():
-        try:
-            score[key] = 1 - (dic[key] - range_keys[key][0]) / (
-                range_keys[key][1] - range_keys[key][0]
-            )
-        except:
-            score[key] = 0
+
+        val = dic[key]
+        min = range_keys[key][0]
+        max = range_keys[key][1]
+
+        score[key] = normalise(val, min, max)
 
     # Use relative weightings to calculate composite
     for key in score.keys():
