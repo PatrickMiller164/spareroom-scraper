@@ -134,7 +134,7 @@ class GetRoomInfo:
                 deposits.append(deposit)
 
         if len(prices) > 0:
-            room_data['average_price'] = sum(prices) / len(prices)
+            room_data['average_price'] = int(sum(prices) / len(prices))
 
         if len(room_sizes) > 0:
             room_data['room_sizes'] = room_sizes
@@ -203,14 +203,14 @@ class GetRoomInfo:
 
         #station = getattr(self, "nearest_station", None)
         if station is None:
-            return False
+            return 'No'
         
         station = clean_string(station)
         
         list = jubilee_stations + elizabeth_line_stations
         list = [clean_string(i) for i in list]
 
-        return station in list
+        return 'Yes' if station in list else 'No'
 
     def _get_image_url(self) -> str:
         img_tag = self.soup.find("img", class_="photo-gallery__main-image")

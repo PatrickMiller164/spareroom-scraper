@@ -2,7 +2,7 @@ MAIN = {
     "use_database": True,
     "update_database": False,
     "headless": True,
-    "number_of_pages": 2,
+    "number_of_pages": 3,
     "min_rent": "200",
     "max_rent": "900",
     "filename": "database.xlsx",
@@ -30,4 +30,5 @@ SCORE_WEIGHTINGS = {
     "total_number_of_rooms": 2,
     "gender": 1,
     "average_price": 5,
+    "furnishings": 2
 }

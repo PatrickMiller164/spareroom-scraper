@@ -1,87 +1,71 @@
 import re
 from config import SCORE_WEIGHTINGS
 from src.utils import normalise, string_to_number
+from src.logger_config import logger
 
-def get_score(row):
+def get_score(room):
 
-    # Get metrics from row dictionary
+    # Get metrics from room dictionary
     metrics = [
-        "direct_line_to_office",
-        "commute_to_office",
-        "commute_to_central",
-        "minimum_term",
-        "bills_included",
-        "broadband_included",
-        "furnishings",
-        "garden_or_patio",
-        "living_room",
-        "balcony_or_rooftop_terrace",
-        "total_number_of_rooms",
-        "gender",
-        "average_price"
+        "direct_line_to_office",        # Yes/No
+        "commute_to_office",            # Int
+        "commute_to_central",           # Int
+        "minimum_term",                 # Int   
+        "bills_included",               # Yes/Some/No
+        "broadband_included",           # Yes/No
+        "furnishings",                  # Unfurnished/Furnished
+        "garden_or_patio",              # Yes/No
+        "living_room",                  # No/Shared
+        "balcony_or_rooftop_terrace",   # No/Yes
+        "total_number_of_rooms",        # Int    
+        "average_price"                 # Int
     ]
 
-    keys_to_parse = [
-        "commute_to_office",
-        "commute_to_central",
-        "minimum_term",
-        "total_number_of_rooms",
-    ]
-
-    dic = {}
-    for metric in metrics:
-        value = getattr(row, metric, None)
-
-        if metric in keys_to_parse and value is not None:
-            dic[metric] = string_to_number(value)
-        else:
-            dic[metric] = value
-
-    # Calculate binary scores
-    score = {}
-    for key in dic.keys():
-        if key == "direct_line_to_office":
-            score[key] = int(dic[key] is True)
-        elif key == "bills_included":
-            if dic[key] == "Yes":
-                score[key] = 1
-            elif dic[key] == "Some":
-                score[key] = 0.5
-            else:
-                score[key] = 0
-        elif key == "broadband_included":
-            score[key] = int(dic[key] == "Yes")
-        elif key == "garden_or_patio":
-            score[key] = int(dic[key] == "Yes")
-        elif key == "living_room":
-            score[key] = int(dic[key] == "shared" or dic[key] == "own")
-        elif key == "balcony_or_rooftop_terrace":
-            score[key] = int(dic[key] == "Yes")
-        elif key == "gender":
-            score[key] = int(dic[key] != "Females preferred")
+    GOOD_VALS = ['Furnished', 'Yes', 'shared', 'Some']
+    BAD_VALS = ['Unfurnished', 'No']
 
     # Calculate range scores
     range_keys = {
-        "commute_to_office": [20, 60],
-        "commute_to_central": [20, 60],
-        "minimum_term": [0, 12],
-        "total_number_of_rooms": [2, 6],
-        "average_price": [700, 1000],
+        "commute_to_office": (20, 60),
+        "commute_to_central": (20, 60),
+        "minimum_term": (0, 12),
+        "total_number_of_rooms": (2, 6),
+        "average_price": (700, 1000),
     }
-    for key in range_keys.keys():
 
-        val = dic[key]
-        min = range_keys[key][0]
-        max = range_keys[key][1]
+    metric_scores = {}
+    for m in metrics:
 
-        if isinstance(val, int):
-            score[key] = normalise(val, min, max)
+        val = getattr(room, m, None)
+        if val is None:
+            metric_scores[m] = 0
+            continue
+
+        if val in GOOD_VALS:
+            #print(f"Giving {m},{val} a score of 1")
+            metric_scores[m] = 1
+
+        elif val in BAD_VALS:
+            #print(f"Giving {m},{val} a score of 0")
+            metric_scores[m] = 0
+
         else:
-            score[key] = 0
+            #print(f"Attempting to parse val from {m}")
+            if isinstance(val, str):
+                val = string_to_number(val)
+            if val:
+                min = range_keys[m][0]
+                max = range_keys[m][1]
+                c_val = normalise(val, min, max)
+                metric_scores[m] = c_val
+            else:
+                logger.warning(f"{m, val} couldn't be assigned a val")
+                metric_scores[m] = 0
 
     # Use relative weightings to calculate composite
-    for key in score.keys():
-        score[key] = score[key] * SCORE_WEIGHTINGS[key]
+    score = {}
+    for key, value in metric_scores.items():
+        score[key] = value * SCORE_WEIGHTINGS[key]
     score = round(sum(score.values()), 1)
 
     return score

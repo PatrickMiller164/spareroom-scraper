@@ -52,7 +52,7 @@ def process_new_rooms(room_urls, x, rooms) -> list[Room]:
         room = room_obj.room
         room.score = get_score(room)
 
-        if len(room.room_sizes) > 0 and room.location != "None, None":
+        if room.room_sizes is not None and room.location != "None, None":
             rooms.append(room)
     print()
 

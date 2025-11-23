@@ -91,6 +91,5 @@ output_cols = [
     "living_room",
     "balcony_or_roof_terrace",
     "number_of_flatmates",
-    "total_number_of_rooms",
-    "gender",
+    "total_number_of_rooms"
 ]
