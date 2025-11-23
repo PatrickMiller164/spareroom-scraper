@@ -1,5 +1,4 @@
 import requests
-import json
 from src.logger_config import logger
 from datetime import datetime, timedelta, time
 from dotenv import load_dotenv

@@ -25,7 +25,6 @@ def get_score_and_price(row):
     dic = {}
     for metric in metrics:
         dic[metric] = getattr(row, metric, None)
-        #dic[metric] = row.get(metric, None)
 
     # Get number from string
     price_keys = [
