@@ -2,6 +2,7 @@ import unicodedata
 from src.Room import Room
 import pickle
 from src.logger_config import logger
+import re
 
 def flush_print(i, list, msg):
     print(f"\r{msg}: {i}/{len(list)}.", end="", flush=True)
@@ -27,3 +28,12 @@ def write_file(file: str, rooms: Room) -> None:
         pickle.dump(rooms, f)
 
     logger.info(f"File now has {len(rooms)} listings")
+
+def string_to_number(string: str) -> int:
+    match = re.search(r"[\d,]+", string)
+    if not match:
+        return None
+
+    num_str = match.group().replace(",", "")
+    return int(num_str)
+    

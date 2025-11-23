@@ -5,7 +5,7 @@ from src.RoomInfo import GetRoomInfo
 from src.Room import Room
 from src.lists import output_cols
 from src.logger_config import logger
-from src.get_score_and_price import get_score_and_price
+from src.calculate_score import get_score
 from src.utils import flush_print, read_file, write_file
 from src.create_map import CreateMap
 from config import MAIN
@@ -50,9 +50,9 @@ def process_new_rooms(room_urls, x, rooms) -> list[Room]:
 
         room_obj = GetRoomInfo(url, x.page, DOMAIN)
         room = room_obj.room
-        room.score, room.average_price = get_score_and_price(room)
+        room.score = get_score(room)
 
-        if room.room_1_bed_size is not None and room.location != "None, None":
+        if len(room.room_sizes) > 0 and room.location != "None, None":
             rooms.append(room)
     print()
 

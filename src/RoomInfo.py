@@ -3,7 +3,7 @@ import re
 from src.logger_config import logger
 from src.lists import jubilee_stations, elizabeth_line_stations
 from dataclasses import fields
-from src.utils import clean_string
+from src.utils import clean_string, string_to_number
 from src.CommuteTime import CommuteTime
 from src.Room import Room
 from pprint import pprint
@@ -115,6 +115,37 @@ class GetRoomInfo:
 
     def _reformat_keys(self, room_data):
 
+        # Rename room attributes
+        prices = []
+        room_sizes = []
+        deposits = []
+        for key, value in room_data.items():
+
+            if "£" in key and "double" in value:
+                price = string_to_number(key)
+                if 'pw' in key:
+                    price = price * 52 / 12
+
+                prices.append(price)
+                room_sizes.append("double")
+
+            elif "deposit" in key:
+                deposit = string_to_number(value)
+                deposits.append(deposit)
+
+        if len(prices) > 0:
+            room_data['average_price'] = sum(prices) / len(prices)
+
+        if len(room_sizes) > 0:
+            room_data['room_sizes'] = room_sizes
+
+        if len(deposits) > 0:
+            room_data['average_deposit'] = sum(deposits) / len(deposits)
+
+        return room_data
+
+    def _rename_keys(self, room_data) -> dict:
+
         RENAMING = {
             '#_flatmates': 'number_of_flatmates',
             '#_housemates': 'number_of_flatmates',
@@ -124,30 +155,23 @@ class GetRoomInfo:
             'balcony/roof_terrace': 'balcony_or_roof_terrace'
         }
 
+        new = {}
+        for key in room_data.keys():
+            if key in RENAMING.keys():
+                new[RENAMING[key]] = room_data[key]
+        
+        room_data.update(new)
+        return room_data
+
+    def _cast_keys(self, room_data) -> dict:
+
         CASTS = {
             'number_of_flatmates': int,
             'total_number_of_rooms': int
         }
 
-        # Rename room attributes
-        new = {}
-        p = 1
-        for attr, value in room_data.items():
-            if "£" in attr and "double" in value:
-                new[f"room_{p}_price_pcm"] = attr.replace("¬", "")
-                new[f"room_{p}_bed_size"] = value
-                p += 1
-            elif "deposit" in attr:
-                match = re.search(r"Room\s*(\d+)", attr, re.IGNORECASE)
-                room_num = match.group(1) if match else "1"
-                new[f"room_{room_num}_deposit"] = value
-
-        for key in room_data.keys():
-            if key in RENAMING.keys():
-                new[RENAMING[key]] = room_data[key]
-        room_data.update(new)
-
         # Cast to int if needed
+        new = {}
         for key, value in room_data.items():
             if key in CASTS.keys() and value is not None:
                 try:
@@ -156,6 +180,7 @@ class GetRoomInfo:
                 except ValueError:
                     pass
 
+        room_data.update(new)
         return room_data
 
     def _get_title(self) -> str:

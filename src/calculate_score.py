@@ -1,8 +1,9 @@
 import re
 from config import SCORE_WEIGHTINGS
-from src.utils import normalise
+from src.utils import normalise, string_to_number
 
-def get_score_and_price(row):
+def get_score(row):
+
     # Get metrics from row dictionary
     metrics = [
         "direct_line_to_office",
@@ -17,46 +18,24 @@ def get_score_and_price(row):
         "balcony_or_rooftop_terrace",
         "total_number_of_rooms",
         "gender",
-        "room_1_price_pcm",
-        "room_2_price_pcm",
-        "room_3_price_pcm",
-        "room_4_price_pcm",
+        "average_price"
     ]
-    dic = {}
-    for metric in metrics:
-        dic[metric] = getattr(row, metric, None)
 
-    # Get number from string
-    price_keys = [
-        "room_1_price_pcm",
-        "room_2_price_pcm",
-        "room_3_price_pcm",
-        "room_4_price_pcm",
+    keys_to_parse = [
         "commute_to_office",
         "commute_to_central",
         "minimum_term",
         "total_number_of_rooms",
     ]
-    prices = []
-    for i in price_keys:
-        try:
-            match = re.search(r"[\d,]+", dic[i])
-            if match:
-                number = int(match.group())
-                if "price_pcm" in i:
-                    if "pw" in dic[i]:
-                        number = int(number * 52 / 12)
-                    prices.append(number)
-                else:
-                    dic[i] = number
-        except (KeyError, TypeError, ValueError):
-            pass
-        if "price_pcm" in i:
-            dic.pop(i, None)
 
-    # Get average_price
-    average_price = sum(prices) // len(prices) if prices else None
-    dic["average_price"] = average_price
+    dic = {}
+    for metric in metrics:
+        value = getattr(row, metric, None)
+
+        if metric in keys_to_parse and value is not None:
+            dic[metric] = string_to_number(value)
+        else:
+            dic[metric] = value
 
     # Calculate binary scores
     score = {}
@@ -105,4 +84,4 @@ def get_score_and_price(row):
         score[key] = score[key] * SCORE_WEIGHTINGS[key]
     score = round(sum(score.values()), 1)
 
-    return score, average_price
+    return score
