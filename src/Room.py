@@ -10,7 +10,6 @@ class Room:
     type: str = None
     available_all_week: bool = None
     area: str = None
-    postcode: str = None
     location: str = None
     nearest_station: str = None
     direct_line_to_office: bool = None
@@ -30,8 +29,5 @@ class Room:
     balcony_or_roof_terrace: str = None
     number_of_flatmates: int = None
     total_number_of_rooms: int = None
-    occupation: str = None
-    min_age: str = None
-    max_age: str = None
     room_sizes: list = None
     image_url: str = None

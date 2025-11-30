@@ -32,9 +32,6 @@ class GetRoomInfo:
         # Get feature list
         room_data.update(self._get_feature_list())
 
-        # Format keys
-        room_data = self._reformat_keys(room_data)
-
         station = room_data['nearest_station']
         room_data['direct_line_to_office'] = self._check_station(station)
 
@@ -42,6 +39,11 @@ class GetRoomInfo:
         commutes = CommuteTime(room_data['location'], self.id)
         room_data['commute_to_office'] = commutes.commute_to_office
         room_data['commute_to_central'] = commutes.commute_to_central
+
+        # Format, rename, and cast room_data dict
+        room_data = self._reformat_keys(room_data)
+        room_data = self._rename_keys(room_data)
+        room_data = self._cast_keys(room_data)
 
         # Keep only valid keys and create Room dataclass object
         valid_keys = {f.name for f in fields(Room)}
@@ -155,11 +157,8 @@ class GetRoomInfo:
             'balcony/roof_terrace': 'balcony_or_roof_terrace'
         }
 
-        new = {}
-        for key in room_data.keys():
-            if key in RENAMING.keys():
-                new[RENAMING[key]] = room_data[key]
-        
+        new = {RENAMING[k]: room_data[k] for k in room_data if k in RENAMING}
+
         room_data.update(new)
         return room_data
 
@@ -171,16 +170,13 @@ class GetRoomInfo:
         }
 
         # Cast to int if needed
-        new = {}
         for key, value in room_data.items():
             if key in CASTS.keys() and value is not None:
                 try:
-                    new = CASTS[key](room_data[key])
-                    room_data[key] = new
+                    room_data[key] = CASTS[key](value)
                 except ValueError:
                     pass
 
-        room_data.update(new)
         return room_data
 
     def _get_title(self) -> str:

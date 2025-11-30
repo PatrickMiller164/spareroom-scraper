@@ -40,7 +40,7 @@ def exclude_expired_rooms(sr: SpareRoom, rooms: list[Room]) -> list[Room]:
     return valid_rows
 
 
-def process_new_rooms(room_urls, x, rooms) -> list[Room]:
+def process_new_rooms(room_urls: list, x, rooms: list[Room]) -> list[Room]:
     logger.info(f"Processing {len(room_urls)} new rooms")
 
     print()

@@ -59,13 +59,9 @@ def get_score(room):
                 c_val = normalise(val, min, max)
                 metric_scores[m] = c_val
             else:
-                logger.warning(f"{m, val} couldn't be assigned a val")
+                logger.warning(f"When calculating score, {m}={val} couldn't be assigned a value")
                 metric_scores[m] = 0
 
     # Use relative weightings to calculate composite
-    score = {}
-    for key, value in metric_scores.items():
-        score[key] = value * SCORE_WEIGHTINGS[key]
-    score = round(sum(score.values()), 1)
-
+    score = round(sum(v * SCORE_WEIGHTINGS[k] for k, v in metric_scores.items()), 1)
     return score

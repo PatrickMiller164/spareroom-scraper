@@ -76,6 +76,7 @@ output_cols = [
     "area",
     "score",
     "average_price",
+    "average_deposit",
     "commute_to_office",
     "commute_to_central",
     "direct_line_to_office",
