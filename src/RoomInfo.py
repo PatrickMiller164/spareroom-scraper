@@ -35,10 +35,12 @@ class GetRoomInfo:
         station = room_data['nearest_station']
         room_data['direct_line_to_office'] = self._check_station(station)
 
-        room_data['location'] = self._get_location_string()
-        commutes = CommuteTime(room_data['location'], self.id)
-        room_data['commute_to_office'] = commutes.commute_to_office
-        room_data['commute_to_central'] = commutes.commute_to_central
+        lat, lon = self._get_location()
+        if (lat, lon) != (None, None):
+            room_data['location'] = self._get_location_string()
+            commutes = CommuteTime(room_data['location'], self.id)
+            room_data['commute_to_office'] = commutes.commute_to_office
+            room_data['commute_to_central'] = commutes.commute_to_central
 
         # Format, rename, and cast room_data dict
         room_data = self._reformat_keys(room_data)
