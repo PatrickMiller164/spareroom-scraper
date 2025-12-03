@@ -4,13 +4,13 @@ import pickle
 from src.logger_config import logger
 import re
 
-def flush_print(i, list, msg):
+def flush_print(i: int, list: list, msg: str) -> None:
     print(f"\r{msg}: {i}/{len(list)}.", end="", flush=True)
 
 def normalise(x: int, min: int, max: int) -> float:
     return 1 - ((x - min) / (max - min))
 
-def clean_string(s):
+def clean_string(s: str) -> str:
     return unicodedata.normalize("NFKC", s).strip().lower()
 
 def read_file(file: str) -> list[Room]:

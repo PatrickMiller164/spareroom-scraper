@@ -6,7 +6,7 @@ from src.Room import Room
 
 
 class CreateMap:
-    def __init__(self, rows: list[Room]):
+    def __init__(self, rows: list[Room]) -> None:
         self.map_center = [51.5074, -0.1278]
         self.map = folium.Map(
             location=self.map_center, tiles="Cartodb Positron", zoom_start=12
@@ -27,7 +27,7 @@ class CreateMap:
 
         self.map.save("output/map.html")
 
-    def filter_listings(self):
+    def filter_listings(self) -> None:
         self.today = datetime.today().date()
         self.favourites = [x for x in self.rows if x.id in FAVOURITES]
         self.old_good_listings = [
@@ -45,7 +45,7 @@ class CreateMap:
             and x.id not in self.favourites
         ]
 
-    def create_and_add_popup(self, list: list[Room], icon_url):
+    def create_and_add_popup(self, list: list[Room], icon_url: str) -> None:
         for listing in list:
             location = tuple(map(float, listing.location.split(",")))
             score = listing.score

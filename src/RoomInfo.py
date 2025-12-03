@@ -6,12 +6,11 @@ from dataclasses import fields
 from src.utils import clean_string, string_to_number
 from src.CommuteTime import CommuteTime
 from src.Room import Room
-from pprint import pprint
 
 class GetRoomInfo:
     room: Room
     
-    def __init__(self, url: str, page, domain: str):
+    def __init__(self, url: str, page, domain: str) -> None:
         self.page = page
         self.url = domain + url
         self.id = url.split("=")[1].split("&")[0]
@@ -52,11 +51,11 @@ class GetRoomInfo:
         filtered_room_data = {k:v for k, v in room_data.items() if k in valid_keys}
         self.room = Room(**filtered_room_data)
 
-    def get_room_soup(self):
+    def get_room_soup(self) -> None:
         self.page.goto(self.url, timeout=10000)
         self.soup = BeautifulSoup(self.page.content(), "html.parser")
 
-    def _get_key_features(self):
+    def _get_key_features(self) -> dict:
         key_names = ["type", "area", "postcode", "nearest_station"]
         key_features = dict.fromkeys(key_names)
 
@@ -82,7 +81,7 @@ class GetRoomInfo:
 
         return key_features
 
-    def _get_feature_list(self):
+    def _get_feature_list(self) -> dict:
         features = {}
 
         feature_list = self.soup.find_all("dl", class_="feature-list")
@@ -99,7 +98,7 @@ class GetRoomInfo:
 
         return features
 
-    def _get_location(self):
+    def _get_location(self) -> tuple:
         pattern = r'location:\s*{[^}]*latitude:\s*"([^"]+)",\s*longitude:\s*"([^"]+)"'
         match = re.search(pattern, str(self.soup))
 
@@ -111,13 +110,13 @@ class GetRoomInfo:
             logger.warning("Location not found")
             return None, None
 
-    def _get_location_string(self):
+    def _get_location_string(self) -> str:
         lat, lon = self._get_location()
         if lat is None and lon is None:
             return None
         return f"{lat}, {lon}"
 
-    def _reformat_keys(self, room_data):
+    def _reformat_keys(self, room_data: dict) -> dict:
 
         # Rename room attributes
         prices = []
@@ -148,7 +147,7 @@ class GetRoomInfo:
 
         return room_data
 
-    def _rename_keys(self, room_data) -> dict:
+    def _rename_keys(self, room_data: dict) -> dict:
 
         RENAMING = {
             '#_flatmates': 'number_of_flatmates',
@@ -164,7 +163,7 @@ class GetRoomInfo:
         room_data.update(new)
         return room_data
 
-    def _cast_keys(self, room_data) -> dict:
+    def _cast_keys(self, room_data: dict) -> dict:
 
         CASTS = {
             'number_of_flatmates': int,
@@ -197,7 +196,7 @@ class GetRoomInfo:
                     return False
         return True
 
-    def _check_station(self, station) -> bool:
+    def _check_station(self, station: str) -> bool:
 
         #station = getattr(self, "nearest_station", None)
         if station is None:

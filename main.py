@@ -16,7 +16,7 @@ DOMAIN = "https://www.spareroom.co.uk"
 FILE = "data/rooms.pkl"
 
 
-def filter_for_new_rooms_only(rooms, room_urls) -> list[str]:
+def filter_for_new_rooms_only(rooms: list[Room], room_urls: list[str]) -> list[str]:
     existing_ids = [row.id for row in rooms]
     room_ids = [url.split("=")[1].split("&")[0] for url in room_urls]
     return [url for (url, id) in zip(room_urls, room_ids) if id not in existing_ids]
@@ -59,7 +59,7 @@ def process_new_rooms(room_urls: list, x, rooms: list[Room]) -> list[Room]:
     return rooms
 
 
-def create_and_export_dataframe(rooms, filename, min_rent) -> None:
+def create_and_export_dataframe(rooms: list[Room], filename: str, min_rent: str) -> None:
     dict_list = [asdict(room) for room in rooms]
     df = (
         pl.LazyFrame(dict_list, infer_schema_length=len(dict_list))
@@ -91,8 +91,8 @@ def create_and_export_dataframe(rooms, filename, min_rent) -> None:
     logger.info(f"Saved database to {filename}.")
 
 
-def main(use_database, update_database, headless, 
-         number_of_pages, min_rent, max_rent, filename) -> None:
+def main(use_database: bool, update_database: bool, headless: bool, 
+         number_of_pages: int, min_rent: str, max_rent: str, filename: str) -> None:
     logger.info(f""" STARTING PROGRAM
                 
     Use with database:  {use_database}, 

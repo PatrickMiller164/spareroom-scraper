@@ -16,7 +16,7 @@ URL = "https://routes.googleapis.com/directions/v2:computeRoutes"
 
 
 class CommuteTime:
-    def __init__(self, location, id):
+    def __init__(self, location: str, id: str) -> None:
         self.API_KEY = API_KEY
         self.id = id
         self.commute_to_office = None

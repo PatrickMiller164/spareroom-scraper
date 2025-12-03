@@ -4,14 +4,14 @@ from src.logger_config import logger
 
 
 class SpareRoom:
-    def __init__(self, domain, headless):
+    def __init__(self, domain: str, headless: bool) -> None:
         self.playwright = sync_playwright().start()
         self.domain = domain
         self.room_urls = []
         self.soups = []
         self.launch_browser(headless)
 
-    def launch_browser(self, headless):
+    def launch_browser(self, headless: bool) -> None:
         # Launch browser either headless or with header
         if headless:
             browser = self.playwright.chromium.launch(headless=True)
@@ -22,7 +22,7 @@ class SpareRoom:
             self.page = context.new_page()
         logger.info("Launched browser.")
 
-    def search_spareroom(self, min_rent, max_rent):
+    def search_spareroom(self, min_rent: str, max_rent: str) -> None:
         # Enter params and go to results
         search_url = "/flatshare/search.pl?searchtype=advanced"
         self.page.goto(self.domain + search_url, timeout=10000)
@@ -57,7 +57,7 @@ class SpareRoom:
 
         logger.info("Searching Spareroom.")
 
-    def iterate_through_pages(self, number_of_pages):
+    def iterate_through_pages(self, number_of_pages: int) -> None:
         # Sort by newest ads first
         self.page.select_option("#sort_by", value="days_since_placed")
 
@@ -83,7 +83,7 @@ class SpareRoom:
 
         logger.info(f"Retrieved {len(self.room_urls)} rooms")
 
-    def get_room_urls(self):
+    def get_room_urls(self) -> None:
         # Get room urls for a page
         self.page.wait_for_selector("ul.listing-results")
         html = self.page.content()
