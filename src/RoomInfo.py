@@ -4,8 +4,10 @@ from src.logger_config import logger
 from src.lists import jubilee_stations, elizabeth_line_stations
 from dataclasses import fields
 from src.utils import clean_string, string_to_number
-from src.CommuteTime import CommuteTime
+from src.CommuteService import CommuteService
 from src.Room import Room
+
+commute_service = CommuteService()
 
 class GetRoomInfo:
     room: Room
@@ -36,10 +38,10 @@ class GetRoomInfo:
 
         lat, lon = self._get_location()
         if (lat, lon) != (None, None):
-            room_data['location'] = self._get_location_string()
-            commutes = CommuteTime(room_data['location'], self.id)
-            room_data['commute_to_office'] = commutes.commute_to_office
-            room_data['commute_to_central'] = commutes.commute_to_central
+            room_data['location'] = f"{lat}, {lon}"
+            commutes = commute_service.get_commutes(id=self.id, start=(lat, lon))
+            room_data['commute_to_office'] = commutes[0]
+            room_data['commute_to_central'] = commutes[1]
 
         # Format, rename, and cast room_data dict
         room_data = self._reformat_keys(room_data)
@@ -109,12 +111,6 @@ class GetRoomInfo:
         else:
             logger.warning("Location not found")
             return None, None
-
-    def _get_location_string(self) -> str:
-        lat, lon = self._get_location()
-        if lat is None and lon is None:
-            return None
-        return f"{lat}, {lon}"
 
     def _reformat_keys(self, room_data: dict) -> dict:
 

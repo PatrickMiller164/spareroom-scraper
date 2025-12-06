@@ -3,6 +3,7 @@ from src.Room import Room
 import pickle
 from src.logger_config import logger
 import re
+from datetime import datetime, timedelta, time
 
 def flush_print(i: int, list: list, msg: str) -> None:
     print(f"\r{msg}: {i}/{len(list)}.", end="", flush=True)
@@ -37,3 +38,9 @@ def string_to_number(string: str) -> int:
     num_str = match.group().replace(",", "")
     return int(num_str)
     
+def get_last_tuesday_9am() -> str:
+    ref_date = datetime.today()
+    offset = (ref_date.weekday() - 1) % 7  # 1 = Tuesday
+    last_tuesday_date = ref_date - timedelta(days=offset)
+    tuesday_9am = datetime.combine(last_tuesday_date.date(), time(9, 0))
+    return tuesday_9am.strftime("%Y-%m-%dT%H:%M:%SZ")

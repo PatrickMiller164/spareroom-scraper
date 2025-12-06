@@ -11,7 +11,6 @@ from src.create_map import CreateMap
 from config import MAIN
 from dataclasses import asdict
 
-
 DOMAIN = "https://www.spareroom.co.uk"
 FILE = "data/rooms.pkl"
 
