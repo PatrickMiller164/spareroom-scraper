@@ -42,6 +42,8 @@ python main.py
 
 ### Calculating commute times
 This scraper can also calculate commute times from the listing location to two locations. It does this using Google's Routes API. To enable this feature, create a Google Cloud account, go to the Google Maps Platform and click onto the Keys and Credentials page. Create an API Key for the Routes API and store the API Key in a .env file in the project directory. Additionally, add up to two pairs of coordinates with the following variable names.
+
+Example `.env` file:
 ```
 GOOGLE_API_KEY=<api_key>
 
