@@ -13,8 +13,8 @@ class Room:
     location: str = None
     nearest_station: str = None
     direct_line_to_office: bool = None
-    commute_to_office: str = None
-    commute_to_central: str = None
+    location_1: str = None
+    location_2: str = None
     score: int = None
     average_price: int = None
     average_deposit: int = None

@@ -7,7 +7,18 @@ from src.utils import clean_string, string_to_number
 from src.CommuteService import CommuteService
 from src.Room import Room
 
-commute_service = CommuteService()
+cs = CommuteService()
+if cs.API_KEY is None:
+    logger.warning("Skipping CommuteService as GOOGLE_API_KEY cannot be found in .env file")
+
+if cs.L1[0] is None or cs.L1[1] is None:
+    logger.warning("Skipping commute service for location 1 as at least one coordinate missing.")
+    logger.warning("Ensure both L1_LAT and L1_LON are defined in the .env file")
+
+if cs.L2[0] is None or cs.L2[1] is None:
+    logger.warning("Skipping commute service for location 2 as at least one coordinate missing.")
+    logger.warning("Ensure both L2_LAT and L2_LON are defined in the .env file")
+
 
 class GetRoomInfo:
     room: Room
@@ -36,12 +47,15 @@ class GetRoomInfo:
         station = room_data['nearest_station']
         room_data['direct_line_to_office'] = self._check_station(station)
 
+        # Get listing location, run commute service if API KEY and location coordinates exist
         lat, lon = self._get_location()
         if (lat, lon) != (None, None):
             room_data['location'] = f"{lat}, {lon}"
-            commutes = commute_service.get_commutes(id=self.id, start=(lat, lon))
-            room_data['commute_to_office'] = commutes[0]
-            room_data['commute_to_central'] = commutes[1]
+            if cs.API_KEY is not None:
+                if cs.L1[0] is not None and cs.L1[1] is not None:
+                    room_data['location_1'] = cs.get_commute(id=self.id, start=(lat, lon), end=cs.L1)
+                if cs.L2[0] is not None and cs.L2[1] is not None:
+                    room_data['location_2'] = cs.get_commute(id=self.id, start=(lat, lon), end=cs.L2)
 
         # Format, rename, and cast room_data dict
         room_data = self._reformat_keys(room_data)
@@ -194,7 +208,6 @@ class GetRoomInfo:
 
     def _check_station(self, station: str) -> bool:
 
-        #station = getattr(self, "nearest_station", None)
         if station is None:
             return 'No'
         

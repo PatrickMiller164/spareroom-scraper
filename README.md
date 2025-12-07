@@ -28,8 +28,8 @@ git clone https://github.com/PatrickMiller164/spareroom
 cd spareroom
 
 # Create and activate a virtual environment
-python3 -m venv spareroom
-source spareroom/bin/activate
+python3 -m venv venv
+source venv/bin/activate
 
 # Install everything from the requirements.txt file
 pip install -r requirements.txt
@@ -45,11 +45,11 @@ This scraper can also calculate commute times from the listing location to two l
 ```
 GOOGLE_API_KEY=<api_key>
 
-OFFICE_LOCATION_LAT=<float>
-OFFICE_LOCATION_LONG=-<float>
+L1_LAT=<float>
+L1_LON=-<float>
 
-CENTRAL_LAT=<float>
-CENTRAL_LONG=<float>
+L2_LAT=<float>
+L2_LON=<float>
 ```
 
 ### General config
@@ -67,12 +67,12 @@ MAIN = {
 ```
 
 ### Tailoring the score system
-The score system normalises each metric below between 0 and 1, 0 being the worst and 1 being the best. It then multiples each score by the value set in the SCORE_WEIGHTINGS dictionary. For example, currently the commute_to_office and average_price metrics impact the final score the most, while other metrics like garden_or_patio or broadband_included affect the final score the least. To tailor the scoring system to your prefernces, adjust the relative weighting of these metrics.
+The score system normalises each metric below between 0 and 1, 0 being the worst and 1 being the best. It then multiples each score by the value set in the SCORE_WEIGHTINGS dictionary. For example, currently the location_1 and average_price metrics impact the final score the most, while other metrics like garden_or_patio or broadband_included affect the final score the least. To tailor the scoring system to your prefernces, adjust the relative weighting of these metrics.
 ```
 SCORE_WEIGHTINGS = {
     "direct_line_to_office": 1,
-    "commute_to_office": 5,
-    "commute_to_central": 4,
+    "location_1": 5,
+    "location_2": 4,
     "minimum_term": 1,
     "bills_included": 4,
     "broadband_included": 1,

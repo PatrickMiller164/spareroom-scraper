@@ -7,11 +7,11 @@ load_dotenv()
 
 API_KEY = os.getenv("GOOGLE_API_KEY")
 
-OFFICE_LAT = os.getenv("OFFICE_LOCATION_LAT")
-OFFICE_LONG = os.getenv("OFFICE_LOCATION_LONG")
+L1_LAT = os.getenv("L1_LAT")
+L1_LON = os.getenv("L1_LON")
 
-CENTRAL_LAT = os.getenv("CENTRAL_LAT")
-CENTRAL_LONG =os.getenv("CENTRAL_LONG")
+L2_LAT = os.getenv("L2_LAT")
+L2_LON =os.getenv("L2_LON")
 
 last_tuesday = get_last_tuesday_9am()
 
@@ -21,17 +21,13 @@ class CommuteService:
     def __init__(self) -> None:
         self.API_KEY = API_KEY
         self.last_tuesday = last_tuesday
-        self.office_location = (OFFICE_LAT, OFFICE_LONG)
-        self.central_location = (CENTRAL_LAT, CENTRAL_LONG)
+        self.L1 = (L1_LAT, L1_LON)
+        self.L2 = (L2_LAT, L2_LON)
         self.session = requests.Session()
 
-    def get_commutes(self, id: str, start: tuple) -> str:
-        r1 = self._get_response(start, self.office_location)
-        r2 = self._get_response(start, self.central_location)
-
-        office_commute = self._parse_response(id=id, response=r1)
-        central_commute = self._parse_response(id=id, response=r2)
-        return (office_commute, central_commute)
+    def get_commute(self, id: str, start: tuple, end: tuple) -> str:
+        r = self._get_response(start, end)
+        return self._parse_response(id=id, response=r)
 
     def _get_response(self, start: tuple, end: tuple) -> requests.models.Response:
         headers = {
@@ -65,4 +61,4 @@ class CommuteService:
             minutes = int(duration.replace("s", "")) // 60
             return f"{minutes} mins"
         else:
-            print(f"Request failed: {response.text}")
+            logger.warning(f"Request failed: {response.text}")

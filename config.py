@@ -19,8 +19,8 @@ FAVOURITES = []
 
 SCORE_WEIGHTINGS = {
     "direct_line_to_office": 1,
-    "commute_to_office": 5,
-    "commute_to_central": 4,
+    "location_1": 5,
+    "location_2": 4,
     "minimum_term": 1,
     "bills_included": 4,
     "broadband_included": 1,

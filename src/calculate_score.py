@@ -9,8 +9,8 @@ def get_score(room: Room) -> float:
     # Get metrics from room dictionary
     metrics = [
         "direct_line_to_office",        # Yes/No
-        "commute_to_office",            # Int
-        "commute_to_central",           # Int
+        "location_1",                   # Int
+        "location_2",                   # Int
         "minimum_term",                 # Int   
         "bills_included",               # Yes/Some/No
         "broadband_included",           # Yes/No
@@ -27,8 +27,8 @@ def get_score(room: Room) -> float:
 
     # Calculate range scores
     range_keys = {
-        "commute_to_office": (20, 60),
-        "commute_to_central": (20, 60),
+        "location_1": (20, 60),
+        "location_2": (20, 60),
         "minimum_term": (0, 12),
         "total_number_of_rooms": (2, 6),
         "average_price": (700, 1000),
@@ -43,15 +43,15 @@ def get_score(room: Room) -> float:
             continue
 
         if val in GOOD_VALS:
-            #print(f"Giving {m},{val} a score of 1")
+            logger.debug(f"Giving {m},{val} a score of 1")
             metric_scores[m] = 1
 
         elif val in BAD_VALS:
-            #print(f"Giving {m},{val} a score of 0")
+            logger.debug(f"Giving {m},{val} a score of 0")
             metric_scores[m] = 0
 
         else:
-            #print(f"Attempting to parse val from {m}")
+            logger.debug(f"Attempting to parse val from {m}")
             if isinstance(val, str):
                 val = string_to_number(val)
             if val:
@@ -60,9 +60,8 @@ def get_score(room: Room) -> float:
                 c_val = normalise(val, min, max)
                 metric_scores[m] = c_val
             else:
-                logger.warning(f"When calculating score, {m}={val} couldn't be assigned a value")
+                logger.debug(f"When calculating score, {m}={val} couldn't be assigned a value")
                 metric_scores[m] = 0
 
     # Use relative weightings to calculate composite
-    score = round(sum(v * SCORE_WEIGHTINGS[k] for k, v in metric_scores.items()), 1)
-    return score
+    return round(sum(v * SCORE_WEIGHTINGS[k] for k, v in metric_scores.items()), 1)
