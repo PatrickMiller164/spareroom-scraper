@@ -20,32 +20,25 @@ This is a Python tool for scraping rental listings from SpareRoom.co.uk, maintai
 
 ## Installation
 
-Clone the repository
 ```
+# Clone the repository
 git clone https://github.com/PatrickMiller164/spareroom
-```
 
-Navigate to the project directory
-```
+# Navigate to the project directory
 cd spareroom
-```
 
-Create and activate a virtual environment
-```
+# Create and activate a virtual environment
 python3 -m venv spareroom
-source venv/bin/activate
-```
+source spareroom/bin/activate
 
-Install everything from the requirements.txt file
-```
+# Install everything from the requirements.txt file
 pip install -r requirements.txt
+
+# Run the main.py file
+python main.py
 ```
 
 ## Usage
-To run the scraper, run the main.py file
-```
-python main.py
-```
 
 ### Calculating commute times
 This scraper can also calculate commute times from the listing location to two locations. It does this using Google's Routes API. To enable this feature, create a Google Cloud account, go to the Google Maps Platform and click onto the Keys and Credentials page. Create an API Key for the Routes API and store the API Key in a .env file in the project directory. Additionally, add up to two pairs of coordinates with the following variable names.
