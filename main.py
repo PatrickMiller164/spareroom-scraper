@@ -10,6 +10,8 @@ from src.utils import flush_print, read_file, write_file
 from src.create_map import CreateMap
 from config import MAIN
 from dataclasses import asdict
+import os
+import xlsxwriter
 
 DOMAIN = "https://www.spareroom.co.uk"
 FILE = "data/rooms.pkl"
@@ -76,13 +78,13 @@ def create_and_export_dataframe(rooms: list[Room], filename: str, min_rent: str)
         worksheet = writer.sheets["Sheet1"]
 
         # Define hyperlink format
-        link_format = workbook.add_format({"font_color": "blue", "underline": 1})
+        link_format = workbook.add_format({"font_color": "blue", "underline": 1}) # type: ignore[attr-defined]
 
         # Replace URLs in column A with 'link' text + hyperlink formatting
         for row_num, url in enumerate(
             df["url"], start=1
         ):  # row 1 = Excel row 2 (zero-based index)
-            worksheet.write_url(row_num, 0, url, link_format, string="link")
+            worksheet.write_url(row_num, 1, url, link_format, string="link")
 
         # Autofit columns (works in pandas >=2.2 with xlsxwriter)
         worksheet.autofit()
@@ -107,8 +109,14 @@ def main(use_database: bool, update_database: bool, headless: bool,
             "Use database must be set to True or number_of_pages must be greater than 0"
         )
 
-    # Import database and idenitfy new rooms
+    # Import database
     rooms = read_file(file=FILE) if use_database else []
+
+    # Remove rooms from database that have been removed from excel file
+    if os.path.exists(f'output/{filename}'):
+        old_df = pl.read_excel(f'output/{filename}').select(pl.col('id'))
+        kept_ids = old_df['id'].to_list()
+        rooms = [r for r in rooms if r.id in kept_ids]
 
     sr = SpareRoom(DOMAIN, headless)
 

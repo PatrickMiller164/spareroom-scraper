@@ -24,13 +24,13 @@ def read_file(file: str) -> list[Room]:
     logger.info(f"Database currently has {len(rows)} listings")
     return rows
 
-def write_file(file: str, rooms: Room) -> None:
+def write_file(file: str, rooms: list[Room]) -> None:
     with open(file, "wb") as f:
         pickle.dump(rooms, f)
 
     logger.info(f"File now has {len(rooms)} listings")
 
-def string_to_number(string: str) -> int:
+def string_to_number(string: str) -> int | None:
     match = re.search(r"[\d,]+", string)
     if not match:
         return None
