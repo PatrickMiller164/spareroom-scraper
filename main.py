@@ -16,12 +16,10 @@ import xlsxwriter
 DOMAIN = "https://www.spareroom.co.uk"
 FILE = "data/rooms.pkl"
 
-
 def filter_for_new_rooms_only(rooms: list[Room], room_urls: list[str]) -> list[str]:
     existing_ids = [row.id for row in rooms]
     room_ids = [url.split("=")[1].split("&")[0] for url in room_urls]
     return [url for (url, id) in zip(room_urls, room_ids) if id not in existing_ids]
-
 
 def exclude_expired_rooms(sr: SpareRoom, rooms: list[Room]) -> list[Room]:
     valid_rows = []

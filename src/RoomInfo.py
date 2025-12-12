@@ -4,18 +4,18 @@ from src.logger_config import logger
 from src.lists import jubilee_stations, elizabeth_line_stations
 from dataclasses import fields
 from src.utils import clean_string, string_to_number
-from src.CommuteService import CommuteService
+from src.CommuteService import CommuteService, Location
 from src.Room import Room
 
 cs = CommuteService()
 if cs.API_KEY is None:
     logger.warning("Skipping CommuteService as GOOGLE_API_KEY cannot be found in .env file")
 
-if cs.L1[0] is None or cs.L1[1] is None:
+if cs.L1.latitude is None or cs.L1.longitude is None:
     logger.warning("Skipping commute service for location 1 as at least one coordinate missing.")
     logger.warning("Ensure both L1_LAT and L1_LON are defined in the .env file")
 
-if cs.L2[0] is None or cs.L2[1] is None:
+if cs.L2.latitude is None or cs.L2.longitude is None:
     logger.warning("Skipping commute service for location 2 as at least one coordinate missing.")
     logger.warning("Ensure both L2_LAT and L2_LON are defined in the .env file")
 
@@ -48,14 +48,14 @@ class GetRoomInfo:
         room_data['direct_line_to_office'] = self._check_station(station)
 
         # Get listing location, run commute service if API KEY and location coordinates exist
-        lat, lon = self._get_location()
-        if (lat, lon) != (None, None):
-            room_data['location'] = f"{lat}, {lon}"
+        room_location = self._get_location()
+        if room_location != (None, None):
+            room_data['location'] = f"{room_location.latitude}, {room_location.longitude}"
             if cs.API_KEY is not None:
-                if cs.L1[0] is not None and cs.L1[1] is not None:
-                    room_data['location_1'] = cs.get_commute(id=self.id, start=(lat, lon), end=cs.L1)
-                if cs.L2[0] is not None and cs.L2[1] is not None:
-                    room_data['location_2'] = cs.get_commute(id=self.id, start=(lat, lon), end=cs.L2)
+                if cs.L1.latitude is not None and cs.L1.longitude is not None:
+                    room_data['location_1'] = cs.get_commute(id=self.id, start=room_location, end=cs.L1)
+                if cs.L2.latitude is not None and cs.L2.longitude is not None:
+                    room_data['location_2'] = cs.get_commute(id=self.id, start=room_location, end=cs.L2)
 
         # Format, rename, and cast room_data dict
         room_data = self._reformat_keys(room_data)
@@ -114,17 +114,17 @@ class GetRoomInfo:
 
         return features
 
-    def _get_location(self) -> tuple:
+    def _get_location(self) -> Location:
         pattern = r'location:\s*{[^}]*latitude:\s*"([^"]+)",\s*longitude:\s*"([^"]+)"'
         match = re.search(pattern, str(self.soup))
 
         if match:
             latitude = round(float(match.group(1)), 6)
             longitude = round(float(match.group(2)), 6)
-            return latitude, longitude
+            return Location(latitude, longitude)
         else:
             logger.warning("Location not found")
-            return None, None
+            return Location()
 
     def _reformat_keys(self, room_data: dict) -> dict:
 
@@ -206,19 +206,16 @@ class GetRoomInfo:
                     return False
         return True
 
-    def _check_station(self, station: str) -> bool:
-
+    def _check_station(self, station: str) -> str:
         if station is None:
             return 'No'
-        
         station = clean_string(station)
-        
         list = jubilee_stations + elizabeth_line_stations
         list = [clean_string(i) for i in list]
-
         return 'Yes' if station in list else 'No'
 
     def _get_image_url(self) -> str:
         img_tag = self.soup.find("img", class_="photo-gallery__main-image")
         if img_tag and img_tag.get("src"):
             return img_tag["src"]
+        
