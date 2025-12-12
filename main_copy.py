@@ -17,21 +17,19 @@ DOMAIN = "https://www.spareroom.co.uk"
 FILE = "data/rooms.pkl"
 
 class SpareRoomManager:
-    def __init__(self, use_database: bool, update_database: bool, headless: bool,
+    def __init__(self, update_database: bool, headless: bool,
         number_of_pages: int, min_rent: str, max_rent: str, filename: str) -> None:
-        self.use_database = use_database
         self.update_database = update_database
         self.number_of_pages = number_of_pages
         self.min_rent = min_rent
         self.max_rent = max_rent
         self.filename = f'output/{filename}'
-        self.rooms = read_file(file=FILE) if self.use_database else []
+        self.rooms = read_file(file=FILE)
         self.sr = SpareRoom(DOMAIN, headless)
 
         logger.info(
         f"""STARTING PROGRAM
                 
-        Use with database:  {use_database}, 
         Update database:    {update_database},
         Number of pages:    {number_of_pages}, 
         Minimum rent:       {min_rent}, 
@@ -40,7 +38,7 @@ class SpareRoomManager:
         """
         )
 
-        if not self.use_database and self.number_of_pages == 0:
+        if self.number_of_pages == 0:
             raise ValueError(
                 "Use database must be set to True "
                 "or number_of_pages must be greater than 0"
@@ -50,7 +48,7 @@ class SpareRoomManager:
 
         self._remove_unwanted_rooms_from_database()
 
-        if self.update_database and self.use_database:
+        if self.update_database:
             self._remove_expired_rooms_from_database()
 
         # Search Spareroom, process new rooms
@@ -63,15 +61,12 @@ class SpareRoomManager:
                 self._process_new_rooms()
 
         # If using database, save new rooms to database
-        if self.use_database:
-            write_file(file=FILE, rooms=self.rooms)
+        write_file(file=FILE, rooms=self.rooms)
 
         # Create and export dataframe
         self._create_and_export_dataframe()
 
     def _remove_unwanted_rooms_from_database(self) -> None:
-        if not self.use_database:
-            return
         if not os.path.exists(self.filename):
             return
         
@@ -150,7 +145,6 @@ class SpareRoomManager:
 
 if __name__ == "__main__":
     spm = SpareRoomManager(
-        use_database=MAIN["use_database"],
         update_database=MAIN["update_database"],
         headless=MAIN["headless"],
         number_of_pages=MAIN["number_of_pages"],

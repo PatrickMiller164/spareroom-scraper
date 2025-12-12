@@ -1,5 +1,4 @@
 MAIN = {
-    "use_database": False,
     "update_database": False,
     "headless": True,
     "number_of_pages": 3,
