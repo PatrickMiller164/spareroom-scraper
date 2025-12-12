@@ -17,9 +17,9 @@ DOMAIN = "https://www.spareroom.co.uk"
 FILE = "data/rooms.pkl"
 
 class SpareRoomManager:
-    def __init__(self, update_database: bool, headless: bool,
+    def __init__(self, remove_expired_rooms: bool, headless: bool,
         number_of_pages: int, min_rent: str, max_rent: str, filename: str) -> None:
-        self.update_database = update_database
+        self.remove_expired_rooms = remove_expired_rooms
         self.number_of_pages = number_of_pages
         self.min_rent = min_rent
         self.max_rent = max_rent
@@ -30,7 +30,7 @@ class SpareRoomManager:
         logger.info(
         f"""STARTING PROGRAM
                 
-        Update database:    {update_database},
+        Update database:    {remove_expired_rooms},
         Number of pages:    {number_of_pages}, 
         Minimum rent:       {min_rent}, 
         Maximmum rent:      {max_rent},
@@ -48,7 +48,7 @@ class SpareRoomManager:
 
         self._remove_unwanted_rooms_from_database()
 
-        if self.update_database:
+        if self.remove_expired_rooms:
             self._remove_expired_rooms_from_database()
 
         # Search Spareroom, process new rooms
@@ -145,7 +145,7 @@ class SpareRoomManager:
 
 if __name__ == "__main__":
     spm = SpareRoomManager(
-        update_database=MAIN["update_database"],
+        remove_expired_rooms=MAIN["remove_expired_rooms"],
         headless=MAIN["headless"],
         number_of_pages=MAIN["number_of_pages"],
         min_rent=MAIN["min_rent"],

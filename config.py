@@ -1,5 +1,5 @@
 MAIN = {
-    "update_database": False,
+    "remove_expired_rooms": False,
     "headless": True,
     "number_of_pages": 3,
     "min_rent": "200",
