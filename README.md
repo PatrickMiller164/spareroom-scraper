@@ -25,7 +25,7 @@ This is a Python tool for scraping rental listings from SpareRoom.co.uk, maintai
 git clone https://github.com/PatrickMiller164/spareroom
 
 # Navigate to the project directory
-cd spareroom
+cd spareroom-scraper
 
 # Create and activate a virtual environment
 python3 -m venv venv
