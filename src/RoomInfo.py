@@ -51,10 +51,10 @@ class GetRoomInfo:
         room_location = self._get_location()
         if room_location != (None, None):
             room_data['location'] = f"{room_location.latitude}, {room_location.longitude}"
-            if cs.API_KEY is not None:
-                if cs.L1.latitude is not None and cs.L1.longitude is not None:
+            if cs.API_KEY:
+                if cs.L1.latitude and cs.L1.longitude:
                     room_data['location_1'] = cs.get_commute(id=self.id, start=room_location, end=cs.L1)
-                if cs.L2.latitude is not None and cs.L2.longitude is not None:
+                if cs.L2.latitude and cs.L2.longitude:
                     room_data['location_2'] = cs.get_commute(id=self.id, start=room_location, end=cs.L2)
 
         # Format, rename, and cast room_data dict
