@@ -2,3 +2,4 @@
 - Add docstrings
 - Make repo public
 - Redo the config file
+- Put more business logic into code by introducing more methods
