@@ -58,12 +58,11 @@ L2_LON=<float>
 In the config.py file, each variable in the MAIN dictionary does the following
 ```
 MAIN = {
-    "use_database": True,			# Adds new listings to the existing database when True, otherwise overwriting the existing file
-    "update_database": False,		# When use_database is True, setting to True filters out expired listings
+    "remove_expired_rooms": False,  # Filters out expired listings from database
     "headless": True,				# Enables/Disables the browser when scraping
-    "number_of_pages": 1,			# Number of pages to scrape. There are 10 results per page, sorted by most recently added
-    "min_rent": "200",				# Minimum rent parameter
-    "max_rent": "900",				# Maximum rent parameter
+    "number_of_pages": 1,           # Number of pages to scrape. There are 10 results per page, sorted by most recently added
+    "min_rent": "200",      	    # Minimum rent parameter
+    "max_rent": "900",			    # Maximum rent parameter
     "filename": "database.xlsx",	# Output filename (must be a .xlsx file)
 }
 ```
