@@ -1,7 +1,4 @@
 import unicodedata
-from src.Room import Room
-import pickle
-from src.logger_config import logger
 import re
 from datetime import datetime, timedelta, time
 
@@ -13,22 +10,6 @@ def normalise(x: int, min: int, max: int) -> float:
 
 def clean_string(s: str) -> str:
     return unicodedata.normalize("NFKC", s).strip().lower()
-
-def read_file(file: str) -> list[Room]:
-    try:
-        with open(file, "rb") as f:
-            rows = pickle.load(f)
-    except FileNotFoundError:
-        rows = []
-
-    logger.info(f"Database currently has {len(rows)} listings")
-    return rows
-
-def write_file(file: str, rooms: list[Room]) -> None:
-    with open(file, "wb") as f:
-        pickle.dump(rooms, f)
-
-    logger.info(f"File now has {len(rooms)} listings")
 
 def string_to_number(string: str) -> int | None:
     match = re.search(r"[\d,]+", string)

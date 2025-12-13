@@ -1,7 +1,7 @@
-MAIN = {
+CONFIG = {
     "remove_expired_rooms": False,
     "headless": True,
-    "number_of_pages": 3,
+    "number_of_pages": 7,
     "min_rent": "200",
     "max_rent": "900",
     "filename": "database.xlsx",

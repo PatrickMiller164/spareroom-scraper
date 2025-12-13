@@ -6,11 +6,13 @@ from src.Room import Room
 from src.lists import output_cols
 from src.logger_config import logger
 from src.calculate_score import get_score
-from src.utils import flush_print, read_file, write_file
+from src.utils import flush_print
 from src.create_map import CreateMap
-from config import MAIN
+from config import CONFIG
 from dataclasses import asdict
+from typing import Optional
 import os
+import pickle
 import xlsxwriter
 
 DOMAIN = "https://www.spareroom.co.uk"
@@ -20,50 +22,50 @@ class SpareRoomManager:
     def __init__(self, remove_expired_rooms: bool, headless: bool,
         number_of_pages: int, min_rent: str, max_rent: str, filename: str) -> None:
         self.remove_expired_rooms = remove_expired_rooms
+        self.headless = headless
         self.number_of_pages = number_of_pages
         self.min_rent = min_rent
         self.max_rent = max_rent
         self.filename = f'output/{filename}'
-        self.rooms = read_file(file=FILE)
-        self.sr = SpareRoom(DOMAIN, headless)
+        self.db_path = FILE
+
+        self.rooms: list[Room] = []
+        self.sr: Optional[SpareRoom] = None
+        self.new_room_urls = []
+
+        if self.number_of_pages < 1:
+            raise ValueError("Number_of_pages must be greater than 0")
+
+    def run(self) -> None:
 
         logger.info(
         f"""STARTING PROGRAM
                 
-        Update database:    {remove_expired_rooms},
-        Number of pages:    {number_of_pages}, 
-        Minimum rent:       {min_rent}, 
-        Maximmum rent:      {max_rent},
-        Filename:           {filename}
+        Update database:    {self.remove_expired_rooms},
+        Number of pages:    {self.number_of_pages}, 
+        Minimum rent:       {self.min_rent}, 
+        Maximmum rent:      {self.max_rent},
+        Filename:           {self.filename}
         """
         )
 
-        if self.number_of_pages == 0:
-            raise ValueError(
-                "Use database must be set to True "
-                "or number_of_pages must be greater than 0"
-            )
-
-    def run(self) -> None:
-
-        self._remove_unwanted_rooms_from_database()
+        self.rooms = self._read_file()
+        self.sr = SpareRoom(DOMAIN, self.headless)
 
         if self.remove_expired_rooms:
             self._remove_expired_rooms_from_database()
 
+        self._remove_unwanted_rooms_from_database()
+
         # Search Spareroom, process new rooms
-        if self.number_of_pages > 0:
-            self.sr.search_spareroom(self.min_rent, self.max_rent)
-            self.sr.iterate_through_pages(self.number_of_pages)
-            self.new_room_urls = self._filter_new_rooms_only(self.sr.room_urls)
-            if self.new_room_urls:
-                logger.info(f"Processing {len(self.new_room_urls)} new rooms")
-                self._process_new_rooms()
+        self.sr.search_spareroom(self.min_rent, self.max_rent)
+        self.sr.iterate_through_pages(self.number_of_pages)
+        self.new_room_urls = self._filter_new_rooms_only(self.sr.room_urls)
+        if self.new_room_urls:
+            logger.info(f"Processing {len(self.new_room_urls)} new rooms")
+            self._process_new_rooms()
 
-        # If using database, save new rooms to database
-        write_file(file=FILE, rooms=self.rooms)
-
-        # Create and export dataframe
+        self._write_file()
         self._create_and_export_dataframe()
 
     def _remove_unwanted_rooms_from_database(self) -> None:
@@ -142,15 +144,28 @@ class SpareRoomManager:
 
         logger.info(f"Saved database to {self.filename}.")
 
+    def _read_file(self) -> list[Room]:
+        try:
+            with open(self.db_path, "rb") as f:
+                rows = pickle.load(f)
+        except FileNotFoundError:
+            rows = []
+        logger.info(f"Database currently has {len(rows)} listings")
+        return rows
+
+    def _write_file(self) -> None:
+        with open(self.db_path, "wb") as f:
+            pickle.dump(self.rooms, f)
+        logger.info(f"File now has {len(self.rooms)} listings")
 
 if __name__ == "__main__":
     spm = SpareRoomManager(
-        remove_expired_rooms=MAIN["remove_expired_rooms"],
-        headless=MAIN["headless"],
-        number_of_pages=MAIN["number_of_pages"],
-        min_rent=MAIN["min_rent"],
-        max_rent=MAIN["max_rent"],
-        filename=MAIN["filename"],
+        remove_expired_rooms=CONFIG["remove_expired_rooms"],
+        headless=CONFIG["headless"],
+        number_of_pages=CONFIG["number_of_pages"],
+        min_rent=CONFIG["min_rent"],
+        max_rent=CONFIG["max_rent"],
+        filename=CONFIG["filename"],
     )
     spm.run()
     CreateMap(spm.rooms)
