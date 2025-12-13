@@ -48,8 +48,8 @@ class SpareRoomManager:
         self.sr.search_spareroom(self.min_rent, self.max_rent)
         self.sr.iterate_through_pages(self.number_of_pages)
         self.new_room_urls = self._filter_new_rooms_only(self.sr.room_urls)
+        logger.info(f"Processing {len(self.new_room_urls)} new rooms")
         if self.new_room_urls:
-            logger.info(f"Processing {len(self.new_room_urls)} new rooms")
             self._process_new_rooms()
 
         self._write_file()
