@@ -38,17 +38,6 @@ class SpareRoomManager:
 
     def run(self) -> None:
 
-        logger.info(
-        f"""STARTING PROGRAM
-                
-        Update database:    {self.remove_expired_rooms},
-        Number of pages:    {self.number_of_pages}, 
-        Minimum rent:       {self.min_rent}, 
-        Maximmum rent:      {self.max_rent},
-        Filename:           {self.filename}
-        """
-        )
-
         self.rooms = self._read_file()
         self.sr = SpareRoom(DOMAIN, self.headless)
 
@@ -159,6 +148,7 @@ class SpareRoomManager:
         logger.info(f"File now has {len(self.rooms)} listings")
 
 if __name__ == "__main__":
+    logger.info("STARTING PROGRAM")
     spm = SpareRoomManager(
         remove_expired_rooms=CONFIG["remove_expired_rooms"],
         headless=CONFIG["headless"],
