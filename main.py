@@ -22,7 +22,6 @@ class SpareRoomManager:
     def __init__(self, remove_expired_rooms: bool, headless: bool,
         number_of_pages: int, min_rent: str, max_rent: str, filename: str) -> None:
         self.remove_expired_rooms = remove_expired_rooms
-        self.headless = headless
         self.number_of_pages = number_of_pages
         self.min_rent = min_rent
         self.max_rent = max_rent
@@ -30,7 +29,7 @@ class SpareRoomManager:
         self.db_path = FILE
 
         self.rooms: list[Room] = []
-        self.sr: Optional[SpareRoom] = None
+        self.sr = SpareRoom(DOMAIN, headless)
         self.new_room_urls = []
 
         if self.number_of_pages < 1:
@@ -39,7 +38,6 @@ class SpareRoomManager:
     def run(self) -> None:
 
         self.rooms = self._read_file()
-        self.sr = SpareRoom(DOMAIN, self.headless)
 
         if self.remove_expired_rooms:
             self._remove_expired_rooms_from_database()
