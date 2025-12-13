@@ -1,0 +1,4 @@
+- Persist deleted rooms across runs
+- Add docstrings
+- Make repo public
+- Redo the config file

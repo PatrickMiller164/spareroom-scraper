@@ -75,7 +75,7 @@ class SpareRoomManager:
             self.sr.page.goto(row.url, timeout=10000)
             url = self.sr.page.url
             if row.url != url:
-                logger.warning(f"room {i} no longer found")
+                logger.debug(f"room {i} no longer found")
                 continue
             valid_rows.append(row)
         print()
