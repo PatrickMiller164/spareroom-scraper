@@ -58,7 +58,7 @@ L2_LON=<float>
 In the config.py file, each variable in the MAIN dictionary does the following
 ```
 MAIN = {
-    "remove_expired_rooms": False,  # Filters out expired listings from database
+    "check_for_expired_rooms": False,  # Filters out expired listings from database
     "headless": True,				# Enables/Disables the browser when scraping
     "number_of_pages": 1,           # Number of pages to scrape. There are 10 results per page, sorted by most recently added
     "min_rent": "200",      	    # Minimum rent parameter

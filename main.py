@@ -19,9 +19,9 @@ DOMAIN = "https://www.spareroom.co.uk"
 FILE = "data/rooms.pkl"
 
 class SpareRoomManager:
-    def __init__(self, remove_expired_rooms: bool, headless: bool,
+    def __init__(self, check_for_expired_rooms: bool, headless: bool,
         number_of_pages: int, min_rent: str, max_rent: str, filename: str) -> None:
-        self.remove_expired_rooms = remove_expired_rooms
+        self.check_for_expired_rooms = check_for_expired_rooms
         self.number_of_pages = number_of_pages
         self.min_rent = min_rent
         self.max_rent = max_rent
@@ -39,8 +39,8 @@ class SpareRoomManager:
 
         self.rooms = self._read_file()
 
-        if self.remove_expired_rooms:
-            self._remove_expired_rooms_from_database()
+        if self.check_for_expired_rooms:
+            self._check_for_expired_rooms_from_database()
 
         self._remove_unwanted_rooms_from_database()
 
@@ -64,7 +64,7 @@ class SpareRoomManager:
         kept_ids = old_df['id'].to_list()
         self.rooms = [r for r in self.rooms if r.id in kept_ids]
 
-    def _remove_expired_rooms_from_database(self) -> None:
+    def _check_for_expired_rooms_from_database(self) -> None:
         # Exclude listings that have been taken off Spareroom
         valid_rows = []
 
@@ -148,7 +148,7 @@ class SpareRoomManager:
 if __name__ == "__main__":
     logger.info("STARTING PROGRAM")
     spm = SpareRoomManager(
-        remove_expired_rooms=CONFIG["remove_expired_rooms"],
+        check_for_expired_rooms=CONFIG["check_for_expired_rooms"],
         headless=CONFIG["headless"],
         number_of_pages=CONFIG["number_of_pages"],
         min_rent=CONFIG["min_rent"],

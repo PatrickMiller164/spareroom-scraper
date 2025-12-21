@@ -1,9 +1,9 @@
 CONFIG = {
-    "remove_expired_rooms": False,
+    "check_for_expired_rooms": False,
     "headless": True,
     "number_of_pages": 1,
     "min_rent": "200",
-    "max_rent": "900",
+    "max_rent": "1000",
     "filename": "database.xlsx",
 }
 
