@@ -10,10 +10,9 @@ from src.utils import flush_print
 from src.create_map import CreateMap
 from config import CONFIG
 from dataclasses import asdict
-from typing import Optional
 import os
 import pickle
-import xlsxwriter
+import json
 
 DOMAIN = "https://www.spareroom.co.uk"
 FILE = "data/rooms.pkl"
@@ -28,6 +27,7 @@ class SpareRoomManager:
         self.filename = f'output/{filename}'
         self.db_path = FILE
 
+        self.ignored = []
         self.rooms: list[Room] = []
         self.sr = SpareRoom(DOMAIN, headless)
         self.new_room_urls = []
@@ -55,15 +55,6 @@ class SpareRoomManager:
         self._write_file()
         self._create_and_export_dataframe()
 
-    def _remove_unwanted_rooms_from_database(self) -> None:
-        if not os.path.exists(self.filename):
-            return
-        
-        # Remove rooms from database that have been removed from excel file
-        old_df = pl.read_excel(self.filename).select(pl.col('id'))
-        kept_ids = old_df['id'].to_list()
-        self.rooms = [r for r in self.rooms if r.id in kept_ids]
-
     def _check_for_expired_rooms_from_database(self) -> None:
         # Exclude listings that have been taken off Spareroom
         valid_rows = []
@@ -82,10 +73,42 @@ class SpareRoomManager:
 
         self.rooms = valid_rows
 
+    def _remove_unwanted_rooms_from_database(self) -> None:        
+        ignore_list_path = 'data/ignored_ids.json'
+
+        # Initalise JSON list of ignored ids if JSON can't be found
+        if not os.path.exists(ignore_list_path):
+            logger.info('Remaking ignored_ids JSON file')
+            with open(ignore_list_path, 'w') as f:
+                json.dump([], f, indent=2)
+
+        # Read JSON and set attribute so ids are not used if picked up in new search
+        with open(ignore_list_path, 'r') as f:
+            self.ignored = json.load(f)
+
+        if not os.path.exists(self.filename):
+            return
+
+        # Remove rooms from database where room.ignore != "FALSE"
+        listings_to_ignore = (
+            pl.read_excel(self.filename)
+            .filter(pl.col('ignore').str.to_lowercase() != 'false')
+        )
+        ids_to_ignore = set(listings_to_ignore['id'].to_list())
+        if ids_to_ignore:
+            logger.info(f"Permanently ignoring: {ids_to_ignore}")
+
+        self.rooms = [r for r in self.rooms if r.id not in ids_to_ignore]
+
+        # Append ignored ids to JSON list
+        self.ignored.extend(ids_to_ignore)
+        with open(ignore_list_path, 'w') as f:
+            json.dump(self.ignored, f, indent=2)
+
     def _filter_new_rooms_only(self, room_urls: list[str]) -> list[str]:
         existing_ids = [row.id for row in self.rooms]
         room_ids = [url.split("=")[1].split("&")[0] for url in room_urls]
-        return [url for (url, id) in zip(room_urls, room_ids) if id not in existing_ids]
+        return [url for (url, id) in zip(room_urls, room_ids) if (id not in existing_ids) and (id not in self.ignored)]
 
     def _process_new_rooms(self) -> None:
         print()
@@ -124,7 +147,7 @@ class SpareRoomManager:
             for row_num, url in enumerate(
                 df["url"], start=1
             ):  # row 1 = Excel row 2 (zero-based index)
-                worksheet.write_url(row_num, 1, url, link_format, string="link")
+                worksheet.write_url(row_num, 2, url, link_format, string="link")
 
             # Autofit columns (works in pandas >=2.2 with xlsxwriter)
             worksheet.autofit()

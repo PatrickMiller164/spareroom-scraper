@@ -15,7 +15,7 @@ elizabeth_line_stations = [
 ]
 
 output_cols = [
-    "id", "url", "date_added", "type", "area", "score", "average_price", "average_deposit",
+    "ignore", "id", "url", "date_added", "type", "area", "score", "average_price", "average_deposit",
     "location_1", "location_2", "direct_line_to_office", "location",
     "nearest_station", "available", "minimum_term", "maximum_term", "bills_included",
     "broadband_included", "furnishings", "garden_or_patio", "living_room",

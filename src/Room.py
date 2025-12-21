@@ -4,7 +4,8 @@ from typing import Optional
 
 @dataclass
 class Room:
-    url: str
+    ignore: str = "FALSE"
+    url: str = None
     id: Optional[str] = None
     date_added: date = date.today()
     title: Optional[str] = None
