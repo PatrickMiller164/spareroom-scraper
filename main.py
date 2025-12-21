@@ -89,10 +89,10 @@ class SpareRoomManager:
         if not os.path.exists(self.filename):
             return
 
-        # Remove rooms from database where room.ignore != "FALSE"
+        # Remove rooms from database where room.ignore != "FALSE" (works with nulls)
         listings_to_ignore = (
             pl.read_excel(self.filename)
-            .filter(pl.col('ignore').str.to_lowercase() != 'false')
+            .filter((pl.col('ignore').str.to_lowercase() != 'false') | (pl.col('ignore').is_null()))
         )
         ids_to_ignore = set(listings_to_ignore['id'].to_list())
         if ids_to_ignore:
