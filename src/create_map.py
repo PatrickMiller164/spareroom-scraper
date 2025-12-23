@@ -7,6 +7,15 @@ from src.Room import Room
 
 class CreateMap:
     def __init__(self, rows: list[Room]) -> None:
+        """Initialize the map with room listings and add markers.
+
+        Filters the input room listings into favorites, old good listings, and
+        new good listings. Creates and adds popups for each category based on
+        configuration, then saves the map to "output/map.html".
+
+        Args:
+            rows: List of Room objects to display on the map.
+        """
         self.map_center = [51.5074, -0.1278]
         self.map = folium.Map(
             location=self.map_center, tiles="Cartodb Positron", zoom_start=12
@@ -16,18 +25,18 @@ class CreateMap:
         self.grey_icon = ("assets/marker-icon-grey.png")
         self.yellow_icon = ("assets/marker-icon-yellow.png")
 
-        self.filter_listings()
+        self._filter_listings()
 
         if CREATE_MAP["show_saved_listings"]:
-            self.create_and_add_popup(self.favourites, self.blue_icon)
+            self._create_and_add_popup(self.favourites, self.blue_icon)
         if CREATE_MAP["show_old_listings"]:
-            self.create_and_add_popup(self.old_good_listings, self.grey_icon)
+            self._create_and_add_popup(self.old_good_listings, self.grey_icon)
         if CREATE_MAP["show_new_listings"]:
-            self.create_and_add_popup(self.new_good_listings, self.yellow_icon)
+            self._create_and_add_popup(self.new_good_listings, self.yellow_icon)
 
         self.map.save("output/map.html")
 
-    def filter_listings(self) -> None:
+    def _filter_listings(self) -> None:
         self.today = datetime.today().date()
         self.favourites = [x for x in self.rows if x.id in FAVOURITES]
         self.old_good_listings = [
@@ -45,7 +54,7 @@ class CreateMap:
             and x.id not in self.favourites
         ]
 
-    def create_and_add_popup(self, list: list[Room], icon_url: str) -> None:
+    def _create_and_add_popup(self, list: list[Room], icon_url: str) -> None:
         for listing in list:
             location = tuple(map(float, listing.location.split(",")))
             score = listing.score

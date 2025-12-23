@@ -1,10 +1,22 @@
-import re
 from config import SCORE_WEIGHTINGS
 from src.utils import normalise, string_to_number
 from src.logger_config import logger
 from src.Room import Room
 
 def get_score(room: Room) -> float:
+    """Calculate the room's score
+
+    Discrete metrics are normalised according to the defined GOOD_VALS and BAD_VALS.
+    Continuous metrics are normalised according to the min and max values in range_keys.
+    Once we have value between 0 and 1 for each metric, a composite is calculated
+    according to the user's relative preferences (SCORE_WEIGHTINGS in config.py)
+
+    Args:
+        room: A populated Room object containing all properties to score the room.
+
+    Returns:
+        The room score (rounded to 1 DP)
+    """
 
     # Get metrics from room dictionary
     metrics = [

@@ -24,10 +24,21 @@ class GetRoomInfo:
     room: Room
     
     def __init__(self, url: str, page, domain: str) -> None:
+        """Parse a room listing page and construct a Room object.
+
+        Fetches and parses the room listing HTML, extracts relevant listing details,
+        optionally calculates commute information, and initializes a Room
+        dataclass instance from the extracted data.
+
+        Args:
+            url: Relative URL of the room listing.
+            page: Browser page or session used to fetch listing content.
+            domain: Base domain used to construct the full listing URL.
+        """
         self.page = page
         self.url = domain + url
         self.id = url.split("=")[1].split("&")[0]
-        self.get_room_soup()
+        self._get_room_soup()
 
         # Start building a dictionary of room properties
         room_data = {
@@ -67,7 +78,7 @@ class GetRoomInfo:
         filtered_room_data = {k:v for k, v in room_data.items() if k in valid_keys}
         self.room = Room(**filtered_room_data)
 
-    def get_room_soup(self) -> None:
+    def _get_room_soup(self) -> None:
         self.page.goto(self.url, timeout=10000)
         self.soup = BeautifulSoup(self.page.content(), "html.parser")
 
@@ -127,7 +138,6 @@ class GetRoomInfo:
             return Location()
 
     def _reformat_keys(self, room_data: dict) -> dict:
-
         # Rename room attributes
         prices = []
         room_sizes = []
@@ -158,7 +168,6 @@ class GetRoomInfo:
         return room_data
 
     def _rename_keys(self, room_data: dict) -> dict:
-
         RENAMING = {
             '#_flatmates': 'number_of_flatmates',
             '#_housemates': 'number_of_flatmates',
@@ -174,7 +183,6 @@ class GetRoomInfo:
         return room_data
 
     def _cast_keys(self, room_data: dict) -> dict:
-
         CASTS = {
             'number_of_flatmates': int,
             'total_number_of_rooms': int

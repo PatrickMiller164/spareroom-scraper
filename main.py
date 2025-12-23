@@ -20,6 +20,19 @@ FILE = "data/rooms.pkl"
 class SpareRoomManager:
     def __init__(self, check_for_expired_rooms: bool, headless: bool,
         number_of_pages: int, min_rent: str, max_rent: str, filename: str) -> None:
+        """Initialise the SpareRoom scraper
+
+        Args:
+            check_for_expired_rooms: Whether to check and remove expired rooms from database
+            headless: Whether to scrape SpareRoom showing the Chrome browser or not
+            number_of_pages: Number of result pages to scrape (must be >= 1)
+            min_rent: Minimum rent filter (as a string, e.g., "500")
+            max_rent: Maximum rent filter (as a string, e.g., "1000")
+            filename: Name of the output excel file (saved under the output/ directory)
+
+        Raises:
+            ValueError: If number of pages is less than 1
+        """
         self.check_for_expired_rooms = check_for_expired_rooms
         self.number_of_pages = number_of_pages
         self.min_rent = min_rent
@@ -36,7 +49,12 @@ class SpareRoomManager:
             raise ValueError("Number_of_pages must be greater than 0")
 
     def run(self) -> None:
+        """Run the full room scraping and processing workflow.
 
+        Reads existing rooms from disk, optionally checks for expired rooms and removes
+        them from database, removes unwanted rooms, searches for new listings, processes 
+        any new rooms found, and writes the updated results to disk.
+        """
         self.rooms = self._read_file()
 
         if self.check_for_expired_rooms:

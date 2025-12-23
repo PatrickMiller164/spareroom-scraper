@@ -5,13 +5,22 @@ from src.logger_config import logger
 
 class SpareRoom:
     def __init__(self, domain: str, headless: bool) -> None:
+        """Initialize the browser session for scraping room listings.
+
+        Starts a Playwright session, configures the target domain, and launches
+        the browser with the specified headless setting.
+
+        Args:
+            domain: Base domain used for room listing URLs.
+            headless: Whether to run the browser in headless mode.
+        """
         self.playwright = sync_playwright().start()
         self.domain = domain
         self.room_urls = []
         self.soups = []
-        self.launch_browser(headless)
+        self._launch_browser(headless)
 
-    def launch_browser(self, headless: bool) -> None:
+    def _launch_browser(self, headless: bool) -> None:
         # Launch browser either headless or with header
         if headless:
             browser = self.playwright.chromium.launch(headless=True)
@@ -23,6 +32,16 @@ class SpareRoom:
         logger.info("Launched browser.")
 
     def search_spareroom(self, min_rent: str, max_rent: str) -> None:
+        """Perform a search on Spareroom with specified rent filters.
+
+        Fills the search form on the Spareroom website for London listings,
+        applies the given minimum and maximum rent, sets predefined search
+        filters (room type, availability, photos, etc.), and submits the search.
+
+        Args:
+            min_rent: Minimum rent filter (as a string, e.g., "500").
+            max_rent: Maximum rent filter (as a string, e.g., "1200").
+        """
         # Enter params and go to results
         search_url = "/flatshare/search.pl?searchtype=advanced"
         self.page.goto(self.domain + search_url, timeout=10000)
@@ -58,14 +77,21 @@ class SpareRoom:
         logger.info("Searching Spareroom.")
 
     def iterate_through_pages(self, number_of_pages: int) -> None:
+        """Iterate through listing pages and collect room URLs.
+
+        Navigates through the specified number of pages on the site, sorts listings
+        by newest first, and collects URLs of all room listings found.
+
+        Args:
+            number_of_pages: Number of pages to scan for room listings.
+        """
         # Sort by newest ads first
         self.page.select_option("#sort_by", value="days_since_placed")
 
-        # Get room urls from first x pages
         print()
         for i in range(1, number_of_pages + 1):
             print(f"\rScanning page {i}", end="", flush=True)
-            self.get_room_urls()
+            self._get_room_urls()
 
             next_button = self.page.query_selector("#paginationNextPageLink")
             if not next_button:
@@ -83,7 +109,7 @@ class SpareRoom:
 
         logger.info(f"Retrieved {len(self.room_urls)} rooms")
 
-    def get_room_urls(self) -> None:
+    def _get_room_urls(self) -> None:
         # Get room urls for a page
         self.page.wait_for_selector("ul.listing-results")
         html = self.page.content()

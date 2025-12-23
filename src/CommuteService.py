@@ -1,9 +1,10 @@
 import requests
+import os
+from dotenv import load_dotenv
+from collections import namedtuple
 from src.logger_config import logger
 from src.utils import get_last_tuesday_9am
-from dotenv import load_dotenv
-import os
-from collections import namedtuple
+
 load_dotenv()
 
 API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -22,6 +23,7 @@ Location = namedtuple('Location', ['latitude', 'longitude'], defaults=[None, Non
 
 class CommuteService:
     def __init__(self) -> None:
+        """Initiliase the commute service"""
         self.API_KEY = API_KEY
         self.last_tuesday = last_tuesday
         self.L1 = Location(L1_LAT, L1_LON)
@@ -29,6 +31,22 @@ class CommuteService:
         self.session = requests.Session()
 
     def get_commute(self, id: str, start: Location, end: Location) -> str:
+        """Gets public transport commute time between start and end location.
+
+        Start location is the room's location. End location is self.L1 or self.L2, which are 
+        set by the user (e.g., user's workplace). The commute time is calculated using Google's 
+        Routes API. To estimate a realistic commute time for the user, the calculated commute time 
+        assumes public transport is used, and that he/she will arrive at the destination
+        for 9 AM on a Tuesday.
+
+        Args:
+            id: The id number of the room (room.id)
+            start: The start location coordinates in latitude/longitude
+            end: The end location coordinates in latitude/longitude
+
+        Returns:
+            The commute time in minutes (e.g., "32 mins")
+        """
         r = self._get_response(start, end)
         return self._parse_response(id=id, response=r)
 
