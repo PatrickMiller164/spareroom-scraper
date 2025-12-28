@@ -1,7 +1,7 @@
 import folium
 from folium.features import CustomIcon
-from datetime import datetime
-from config import CREATE_MAP, FAVOURITES
+from datetime import date
+from config import MAP_SETTINGS
 from src.Room import Room
 
 MAP_CENTER = (51.5074, -0.1278)
@@ -21,14 +21,11 @@ class CreateMap:
         self.map = folium.Map(location=MAP_CENTER, tiles="Cartodb Positron", zoom_start=12)
         self.rooms: list[Room] = rooms
 
-        self.all_favourites: list = []
-        self.old_favourites: list = []
-        self.new_favourites: list = []
+        self.favourites: list = []
+        self.new_listings: list = []
 
-        self._show_all_favourites: bool = CREATE_MAP["show_all_favourites"]
-        self._show_old_favourites: bool = CREATE_MAP["show_old_favourites"]
-        self._show_new_favourites: bool = CREATE_MAP["show_new_favourites"]
-
+        self._show_favourites: bool = MAP_SETTINGS["show_favourites"]
+        self._show_new_listings: bool = MAP_SETTINGS["show_new_listings"]
 
     def run(self):
         """Populate the map with room listings and markers.
@@ -39,33 +36,23 @@ class CreateMap:
         """
         self._filter_listings()
 
-        if self._show_all_favourites:
-            self._create_and_add_popup(self.all_favourites, BLUE_ICON)
-        if self._show_old_favourites:
-            self._create_and_add_popup(self.old_favourites, GREY_ICON)
-        if self._show_new_favourites:
-            self._create_and_add_popup(self.new_favourites, YELLOW_ICON)
+        if self._show_favourites and self.favourites:
+            self._create_and_add_popup(self.favourites, YELLOW_ICON)
+        if self._show_new_listings and self.new_listings:
+            self._create_and_add_popup(self.new_listings, BLUE_ICON)
 
         self.map.save("output/map.html")
 
     def _filter_listings(self) -> None:
-        self.all_favourites = [
-            x for x in self.rooms if 
-            x.id in FAVOURITES
+        self.favourites = [
+            r for r in self.rooms
+            if r.status.lower()=='favourite'
         ]
-
-        today = datetime.today().date()
-        self.old_favourites = [
-            x for x in self.rooms if 
-            x.score > CREATE_MAP["min_score"]
-            and x.date_added != today
-            and x.id not in self.all_favourites
-        ]
-        self.new_favourites = [
-            x for x in self.rooms if 
-            x.score > CREATE_MAP["min_score"]
-            and x.date_added == today
-            and x.id not in self.all_favourites
+        self.new_listings = [
+            r for r in self.rooms 
+            if r.score > MAP_SETTINGS["min_score"]
+            and r.date_added == date.today()
+            and r not in self.favourites
         ]
 
     def _create_and_add_popup(self, rooms: list[Room], icon_url: str) -> None:

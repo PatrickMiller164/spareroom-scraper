@@ -1,6 +1,6 @@
 # SpareRoom Scraper
 
-This is a Python tool for scraping rental listings from SpareRoom.co.uk, maintaining a local database of previously-seen rooms, filtering out expired listings, and exporting final results to Excel (and generating a map).
+This is a Python tool for scraping rental listings from SpareRoom.co.uk in London, maintaining a local database of previously-seen rooms, filtering out expired listings, and exporting final results to Excel (and generating a map).
 
 ## Table of Contents
 
@@ -87,10 +87,25 @@ SCORE_WEIGHTINGS = {
 }
 ```
 
+### Output Files
+There are two output files:
+
+- A database stored in `output/database.xlsx`
+<img src="assets/output_file_database.png" alt="Room Screenshot" width="1000"/>
+
+- A map stored in `output/map.html`
+<img src="assets/output_file_map.png" alt="Room Screenshot" width="1000"/>
+
+
 ### Deleting listings from the output file
-To permanently remove listings from the excel output file, rename the value in the status column to 'IGNORE'. Permanently removed listings have their id's stored in the `data/ignored_ids.json` file. To revert a deletion, remove the id from the json file.
+To remove listings from the excel output file, rename the value in the status column to 'IGNORE'. Removed listings have their id's stored in the `data/ignored_ids.json` file. To revert a deletion, remove the id from the json file.
 
 <img src="assets/how_to_remove_listings.png" alt="Room Screenshot" width="200"/>
+
+### Adding a listing to favourites
+To add a listing to favourites, rename the value in the status column to 'FAVOURITE'. Favourited listings have their id's stored in the `data/favourite_ids.json` file. To remove a listing from favourites, set status to an empty cell in the excel file and delete the id from the json file.
+
+<img src="assets/how_to_add_listings_to_favourites.png" alt="Room Screenshot" width="200"/>
 
 ## License
 This project is licensed under the MIT License.

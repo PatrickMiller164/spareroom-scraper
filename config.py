@@ -7,14 +7,11 @@ CONFIG = {
     "filename": "database.xlsx",
 }
 
-CREATE_MAP = {
-    "show_all_favourites": True,
-    "show_old_favourites": False,
-    "show_new_favourites": False,
+MAP_SETTINGS = {
+    "show_favourites": True,
+    "show_new_listings": True,
     "min_score": 15,
 }
-
-FAVOURITES = []
 
 SCORE_WEIGHTINGS = {
     "direct_line_to_office": 1,

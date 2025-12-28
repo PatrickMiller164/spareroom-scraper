@@ -55,12 +55,15 @@ class SpareRoomManager:
         them from database, removes unwanted rooms, searches for new listings, processes 
         any new rooms found, and writes the updated results to disk.
         """
-        self.rooms = self._read_file()
+        self.rooms = self._read_pickle_file()
+        self.ignored = []
+        self.favourites = []
 
         if self.check_for_expired_rooms:
             self._check_for_expired_rooms_from_database()
 
-        self._remove_unwanted_rooms_from_database()
+        if os.path.exists(self.filename):
+            self._process_ignore_and_favourite_requests()
 
         # Search Spareroom, process new rooms
         self.sr.search_spareroom(self.min_rent, self.max_rent)
@@ -70,7 +73,7 @@ class SpareRoomManager:
         if self.new_room_urls:
             self._process_new_rooms()
 
-        self._write_file()
+        self._write_pickle_file()
         self._create_and_export_dataframe()
 
     def _check_for_expired_rooms_from_database(self) -> None:
@@ -91,37 +94,40 @@ class SpareRoomManager:
 
         self.rooms = valid_rows
 
-    def _remove_unwanted_rooms_from_database(self) -> None:        
-        ignore_list_path = 'data/ignored_ids.json'
+    def _process_ignore_and_favourite_requests(self) -> None:
+        df = pl.read_excel(self.filename)
+        tuples = list(df.select(['id', 'status']).iter_rows())
 
-        # Initalise JSON list of ignored ids if JSON can't be found
-        if not os.path.exists(ignore_list_path):
-            logger.info('Remaking ignored_ids JSON file')
-            with open(ignore_list_path, 'w') as f:
-                json.dump([], f, indent=2)
+        # Validate statuses
+        for id, status in tuples:
+            if status and status.lower() not in ['favourite', 'ignore']:
+                logger.warning(f"room with id: {id} has invalid status: {status}")
 
-        # Read JSON and set attribute so ids are not used if picked up in new search
-        with open(ignore_list_path, 'r') as f:
-            self.ignored = json.load(f)
+        configs = [
+            ('ignored', 'data/ignored_ids.json', 'ignore', 'Ignoring'),
+            ('favourites', 'data/favourite_ids.json', 'favourite', 'Adding to favourites')
+        ]
 
-        if not os.path.exists(self.filename):
-            return
+        for attr, path, keyword, msg in configs:
+            ls = self._read_json_file(path=path)
 
-        # Remove rooms from database where room.status is "IGNORE" (works with nulls)
-        listings_to_ignore = (
-            pl.read_excel(self.filename)
-            .filter(pl.col('status').str.to_lowercase() == 'ignore')
-        )
-        ids_to_ignore = set(listings_to_ignore['id'].to_list())
-        if ids_to_ignore:
-            logger.info(f"Permanently ignoring: {ids_to_ignore}")
+            new_ids = [
+                id for id, status in tuples 
+                if status and status.lower()==keyword and id not in ls
+            ]
+            
+            if new_ids:
+                logger.info(f"{msg}: {new_ids}")
+                ls.extend(new_ids)
+                self._write_json_file(path=path, ls=ls)    
 
-        self.rooms = [r for r in self.rooms if r.id not in ids_to_ignore]
+            setattr(self, attr, ls)
 
-        # Append ignored ids to JSON list
-        self.ignored.extend(ids_to_ignore)
-        with open(ignore_list_path, 'w') as f:
-            json.dump(self.ignored, f, indent=2)
+        # Remove ignored rooms from database and update status of favourited rooms
+        self.rooms = [r for r in self.rooms if r.id not in self.ignored]
+        for r in self.rooms:
+            if r.id in self.favourites:
+                r.status = 'FAVOURITE'
 
     def _filter_new_rooms_only(self, room_urls: list[str]) -> list[str]:
         existing_ids = [row.id for row in self.rooms]
@@ -172,7 +178,7 @@ class SpareRoomManager:
 
         logger.info(f"Saved database to {self.filename}.")
 
-    def _read_file(self) -> list[Room]:
+    def _read_pickle_file(self) -> list[Room]:
         try:
             with open(self.db_path, "rb") as f:
                 rows = pickle.load(f)
@@ -181,10 +187,26 @@ class SpareRoomManager:
         logger.info(f"Database currently has {len(rows)} listings")
         return rows
 
-    def _write_file(self) -> None:
+    def _write_pickle_file(self) -> None:
         with open(self.db_path, "wb") as f:
             pickle.dump(self.rooms, f)
         logger.info(f"File now has {len(self.rooms)} listings")
+
+    @staticmethod
+    def _read_json_file(path: str) -> json:
+        try:
+            with open(path, 'r') as f:
+                return json.load(f)
+        except FileNotFoundError:
+            SpareRoomManager._write_json_file(path=path, ls=[])
+            logger.info(f'Remaking {path}')            
+            return []
+        
+    @staticmethod
+    def _write_json_file(path: str, ls: list) -> None:
+        with open(path, 'w') as f:
+            json.dump(ls, f, indent=2)
+
 
 if __name__ == "__main__":
     logger.info("STARTING PROGRAM")
