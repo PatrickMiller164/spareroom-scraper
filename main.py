@@ -107,10 +107,10 @@ class SpareRoomManager:
         if not os.path.exists(self.filename):
             return
 
-        # Remove rooms from database where room.ignore != "FALSE" (works with nulls)
+        # Remove rooms from database where room.status is "IGNORE" (works with nulls)
         listings_to_ignore = (
             pl.read_excel(self.filename)
-            .filter((pl.col('ignore').str.to_lowercase() != 'false') | (pl.col('ignore').is_null()))
+            .filter(pl.col('status').str.to_lowercase() == 'ignore')
         )
         ids_to_ignore = set(listings_to_ignore['id'].to_list())
         if ids_to_ignore:
@@ -197,5 +197,6 @@ if __name__ == "__main__":
         filename=CONFIG["filename"],
     )
     spm.run()
-    CreateMap(spm.rooms)
+    cm = CreateMap(rooms=spm.rooms)
+    cm.run()
     logger.info("STOPPING PROGRAM")

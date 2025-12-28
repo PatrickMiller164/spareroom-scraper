@@ -8,9 +8,9 @@ CONFIG = {
 }
 
 CREATE_MAP = {
-    "show_saved_listings": True,
-    "show_old_listings": False,
-    "show_new_listings": True,
+    "show_all_favourites": True,
+    "show_old_favourites": False,
+    "show_new_favourites": False,
     "min_score": 15,
 }
 

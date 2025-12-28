@@ -88,7 +88,7 @@ SCORE_WEIGHTINGS = {
 ```
 
 ### Deleting listings from the output file
-To permanently remove listings from the excel output file, rename the ignore value from 'FALSE' to anything else (see below image for examples). Permanently removed listings have their id's stored in the `data/ignored_ids.json` file. To revert a deletion, remove the id from the json file.
+To permanently remove listings from the excel output file, rename the value in the status column to 'IGNORE'. Permanently removed listings have their id's stored in the `data/ignored_ids.json` file. To revert a deletion, remove the id from the json file.
 
 <img src="assets/how_to_remove_listings.png" alt="Room Screenshot" width="200"/>
 

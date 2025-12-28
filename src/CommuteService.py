@@ -25,10 +25,10 @@ class CommuteService:
     def __init__(self) -> None:
         """Initiliase the commute service"""
         self.API_KEY = API_KEY
-        self.last_tuesday = last_tuesday
+        self._last_tuesday = last_tuesday
         self.L1 = Location(L1_LAT, L1_LON)
         self.L2 = Location(L2_LAT, L2_LON)
-        self.session = requests.Session()
+        self._session = requests.Session()
 
     def get_commute(self, id: str, start: Location, end: Location) -> str:
         """Gets public transport commute time between start and end location.
@@ -65,12 +65,12 @@ class CommuteService:
             },
             "travelMode": "TRANSIT",
             "transitPreferences": {"allowedTravelModes": "RAIL"},
-            "arrivalTime": f"{self.last_tuesday}",
+            "arrivalTime": f"{self._last_tuesday}",
             "computeAlternativeRoutes": False,
             "languageCode": "en-US",
             "units": "METRIC",
         }
-        return self.session.post(URL, headers=headers, json=payload)
+        return self._session.post(URL, headers=headers, json=payload)
 
     def _parse_response(self, id: str, response: requests.models.Response) -> str:
         if response.status_code == 200:
