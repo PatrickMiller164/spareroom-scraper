@@ -55,7 +55,7 @@ class SpareRoomManager:
         them from database, removes unwanted rooms, searches for new listings, processes 
         any new rooms found, and writes the updated results to disk.
         """
-        self.rooms = self._read_pickle_file()
+        self.rooms = SpareRoomManager._read_pickle_file(path=self.db_path)
         self.ignored = []
         self.favourites = []
 
@@ -73,7 +73,7 @@ class SpareRoomManager:
         if self.new_room_urls:
             self._process_new_rooms()
 
-        self._write_pickle_file()
+        self._write_pickle_file(path=self.db_path, ls=self.rooms)
         self._create_and_export_dataframe()
 
     def _check_for_expired_rooms_from_database(self) -> None:
@@ -178,22 +178,23 @@ class SpareRoomManager:
 
         logger.info(f"Saved database to {self.filename}.")
 
-    def _read_pickle_file(self) -> list[Room]:
+    @staticmethod
+    def _read_pickle_file(path: str) -> list:
         try:
-            with open(self.db_path, "rb") as f:
-                rows = pickle.load(f)
+            with open(path, "rb") as f:
+                return pickle.load(f)
         except FileNotFoundError:
-            rows = []
+            return []
         logger.info(f"Database currently has {len(rows)} listings")
-        return rows
-
-    def _write_pickle_file(self) -> None:
-        with open(self.db_path, "wb") as f:
-            pickle.dump(self.rooms, f)
-        logger.info(f"File now has {len(self.rooms)} listings")
+    
+    @staticmethod
+    def _write_pickle_file(path: str, ls: list[Room]) -> None:
+        with open(path, "wb") as f:
+            pickle.dump(ls, f)
+        logger.info(f"File now has {len(ls)} listings")
 
     @staticmethod
-    def _read_json_file(path: str) -> json:
+    def _read_json_file(path: str) -> list:
         try:
             with open(path, 'r') as f:
                 return json.load(f)

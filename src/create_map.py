@@ -30,9 +30,9 @@ class CreateMap:
     def run(self):
         """Populate the map with room listings and markers.
 
-        Filters the input room listings into favorites, old good listings, and
-        new good listings. Creates and adds popups for each category based on
-        configuration, then saves the map to "output/map.html".
+        Filters the rooms database for favorites and new listings. 
+        Creates and adds popups for each category based on the config.py file,
+        then saves the map to "output/map.html".
         """
         self._filter_listings()
 
