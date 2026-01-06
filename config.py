@@ -1,6 +1,6 @@
 CONFIG = {
     "check_for_expired_rooms": False,
-    "headless": True,
+    "headless": False,
     "number_of_pages": 1,
     "min_rent": "200",
     "max_rent": "1000",

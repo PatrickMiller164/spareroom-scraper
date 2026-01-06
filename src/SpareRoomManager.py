@@ -1,6 +1,10 @@
 import polars as pl
 import pandas as pd
-from src.SpareRoom import SpareRoom
+
+from src.PlaywrightSessionManager import PlaywrightSession
+from src.SpareRoomSearcher import SpareRoomSearcher
+from src.SpareRoomScraper import SpareRoomScraper
+
 from src.RoomInfo import GetRoomInfo
 from src.Room import Room
 from src.lists import output_cols
@@ -38,6 +42,7 @@ class SpareRoomManager:
             ValueError: If number of pages is less than 1
         """
         self.check_for_expired_rooms = check_for_expired_rooms
+        self.headless = headless
         self.number_of_pages = number_of_pages
         self.min_rent = min_rent
         self.max_rent = max_rent
@@ -47,7 +52,6 @@ class SpareRoomManager:
 
         self.ignored = []
         self.rooms: list[Room] = []
-        self.sr = SpareRoom(domain=self.domain, headless=headless)
         self.new_room_urls = []
 
         if self.number_of_pages < 1:
@@ -71,9 +75,14 @@ class SpareRoomManager:
             self._process_ignore_and_favourite_requests()
 
         # Search Spareroom, process new rooms
-        self.sr.search_spareroom(self.min_rent, self.max_rent)
-        self.sr.iterate_through_pages(self.number_of_pages)
-        self.new_room_urls = self._filter_new_rooms_only(self.sr.room_urls)
+        with PlaywrightSession(headless=self.headless) as session:
+            search = SpareRoomSearcher(page=session.page, domain=self.domain)
+            search.run(min_rent=self.min_rent, max_rent=self.max_rent)
+
+            scraper = SpareRoomScraper(page=session.page, domain=self.domain)
+            room_urls = scraper.collect_room_urls(pages=5)
+
+        self.new_room_urls = self._filter_new_rooms_only(room_urls)
         logger.info(f"Processing {len(self.new_room_urls)} new rooms")
         if self.new_room_urls:
             self._process_new_rooms()
@@ -85,17 +94,28 @@ class SpareRoomManager:
         # Exclude listings that have been taken off Spareroom
         valid_rows = []
 
-        print()
-        for i, row in enumerate(self.rooms, start=1):
-            flush_print(i, self.rooms, "Checking room still exists")
+        with PlaywrightSession(self.headless) as session:
+            page = session.page
+            if not page:
+                return
 
-            self.sr.page.goto(row.url, timeout=10000)
-            url = self.sr.page.url
-            if row.url != url:
-                logger.debug(f"room {i} no longer found")
-                continue
-            valid_rows.append(row)
-        print()
+            print()
+            for i, row in enumerate(self.rooms, start=1):
+                flush_print(i, self.rooms, "Checking room still exists")
+
+                try:
+                    page.goto(row.url, timeout=10000)
+                except Exception as e:
+                    logger.warning(f"Failed to load {row.url}: {e}")
+                    continue
+
+                current_url = page.url
+                if row.url != current_url:
+                    logger.debug(f"room {i} no longer found")
+                    continue
+
+                valid_rows.append(row)
+            print()
 
         self.rooms = valid_rows
 
@@ -140,17 +160,22 @@ class SpareRoomManager:
         return [url for (url, id) in zip(room_urls, room_ids) if (id not in existing_ids) and (id not in self.ignored)]
 
     def _process_new_rooms(self) -> None:
-        print()
-        for i, url in enumerate(self.new_room_urls, start=1):
-            flush_print(i, self.new_room_urls, "Processing new rooms")
+        with PlaywrightSession(headless=self.headless) as session:
+            page = session.page
+            if not page:
+                return
+            
+            print()
+            for i, url in enumerate(self.new_room_urls, start=1):
+                flush_print(i, self.new_room_urls, "Processing new rooms")
 
-            room_obj = GetRoomInfo(url, self.sr.page, self.domain)
-            room = room_obj.room
-            room.score = get_score(room)
+                room_obj = GetRoomInfo(url, page, self.domain)
+                room = room_obj.room
+                room.score = get_score(room)
 
-            if room.room_sizes is not None and room.location != ("None, None"):
-                self.rooms.append(room)
-        print()
+                if room.room_sizes is not None and room.location != ("None, None"):
+                    self.rooms.append(room)
+            print()
 
     def _create_and_export_dataframe(self) -> None:
         dict_list = [asdict(room) for room in self.rooms]
