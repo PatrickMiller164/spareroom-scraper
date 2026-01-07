@@ -58,12 +58,16 @@ L2_LON=<float>
 In the config.py file, each variable in the MAIN dictionary does the following
 ```
 MAIN = {
-    "check_for_expired_rooms": False,  # Filters out expired listings from database
-    "headless": True,				# Enables/Disables the browser when scraping
-    "number_of_pages": 1,           # Number of pages to scrape. There are 10 results per page, sorted by most recently added
-    "min_rent": 200,      	    # Minimum rent parameter
-    "max_rent": 900,			    # Maximum rent parameter
-    "output_path": "database.xlsx",	# Output path, must be a .xlsx file
+    "check_for_expired_rooms": False,                   # Filters out expired listings from database
+    "headless": True,				                    # Enables/Disables the browser when scraping
+    "number_of_pages": 1,                               # Number of pages to scrape (10 results per page)
+    "min_rent": 200,      	                            # Minimum rent parameter
+    "max_rent": 900,			                        # Maximum rent parameter
+    "output_path": "database.xlsx",	                    # Output path, must be a .xlsx file
+    "database_path": "data/rooms.pkl",                  # Database path containing room info
+    "ignored_ids_path": "data/ignored_ids.json",        # JSON list of rooms to ignore
+    "favourite_ids_path": "data/favourite_ids.json",    # JSON list of favourited rooms
+    "domain": "https://www.spareroom.co.uk"             # SpareRoom domain
 }
 ```
 
