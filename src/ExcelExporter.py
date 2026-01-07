@@ -2,7 +2,14 @@ import polars as pl
 import pandas as pd
 from src.utils.logger_config import logger
 from dataclasses import asdict
-from src.lists import output_cols
+
+output_cols = [
+    "status", "id", "url", "date_added", "type", "area", "score", "average_price", "average_deposit",
+    "location_1", "location_2", "direct_line_to_office", "location",
+    "nearest_station", "available", "minimum_term", "maximum_term", "bills_included",
+    "broadband_included", "furnishings", "garden_or_patio", "living_room",
+    "balcony_or_roof_terrace", "number_of_flatmates", "total_number_of_rooms"
+]
 
 class ExcelExporter:
     def __init__(self, db_manager, output_path: str, min_rent: int) -> None:
