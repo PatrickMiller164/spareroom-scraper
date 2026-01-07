@@ -12,6 +12,7 @@ def flush_print(i: int, list: list, msg: str) -> None:
     """
     print(f"\r{msg}: {i}/{len(list)}.", end="", flush=True)
 
+
 def normalise(x: int, min: int, max: int) -> float:
     """Normalize a value to a 0–1 scale, inverted.
 
@@ -28,6 +29,7 @@ def normalise(x: int, min: int, max: int) -> float:
     """
     return 1 - ((x - min) / (max - min))
 
+
 def clean_string(s: str) -> str:
     """Normalize and clean a string.
 
@@ -41,6 +43,7 @@ def clean_string(s: str) -> str:
         The normalized, lowercase, and stripped string.
     """
     return unicodedata.normalize("NFKC", s).strip().lower()
+
 
 def string_to_number(string: str) -> int | None:
     """Convert a numeric string with optional commas to an integer.
@@ -61,6 +64,7 @@ def string_to_number(string: str) -> int | None:
     num_str = match.group().replace(",", "")
     return int(num_str)
     
+
 def get_last_tuesday_9am() -> str:
     """Return the datetime of the most recent Tuesday at 9:00 AM in UTC format.
 
@@ -75,3 +79,15 @@ def get_last_tuesday_9am() -> str:
     last_tuesday_date = ref_date - timedelta(days=offset)
     tuesday_9am = datetime.combine(last_tuesday_date.date(), time(9, 0))
     return tuesday_9am.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def get_id_from_url(url: str) -> str:
+    """Parse the room ID from the url of the listing
+
+    Args:
+        url: URL of the listing
+
+    Returns:
+        A string representing the room's SpareRoom ID
+    """
+    return url.split("=")[1].split("&")[0]

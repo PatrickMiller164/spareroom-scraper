@@ -2,7 +2,7 @@ import folium
 from folium.features import CustomIcon
 from datetime import date
 from config import MAP_SETTINGS
-from src.Room import Room
+from src.utils.types import Room
 
 MAP_CENTER = (51.5074, -0.1278)
 

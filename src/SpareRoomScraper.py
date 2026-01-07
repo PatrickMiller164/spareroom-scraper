@@ -1,4 +1,4 @@
-from src.logger_config import logger
+from src.utils.logger_config import logger
 
 
 class SpareRoomScraper:
@@ -9,11 +9,9 @@ class SpareRoomScraper:
     def collect_room_urls(self, pages: int) -> list[str]:
         """Iterate through listing pages and collect room URLs.
 
-        Navigates through the specified number of pages on the site, sorts listings
-        by newest first, and collects URLs of all room listings found.
-
-        Args:
-            pages: Number of pages to scan for room listings.
+        Navigates through the specified number of pages on the site, 
+        sorts listings by newest first, and collects URLs of all
+        room listings found.
         """
         # Sort by newest listings first
         self.page.select_option("#sort_by", value="days_since_placed")

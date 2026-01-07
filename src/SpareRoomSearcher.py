@@ -1,4 +1,4 @@
-from src.logger_config import logger
+from src.utils.logger_config import logger
 
 
 class SpareRoomSearcher:
@@ -9,21 +9,17 @@ class SpareRoomSearcher:
         search_url = "flatshare/search.pl?searchtype=advanced"
         self.page.goto(f"{self.domain}/{search_url}", timeout=10000)
 
-    def run(self, min_rent: str, max_rent: str) -> None:
+    def run(self, min_rent: int, max_rent: int) -> None:
         """Perform a search on Spareroom with specified rent filters.
 
         Fills the search form on the Spareroom website for London listings,
         applies the given minimum and maximum rent, sets predefined search
         filters (room type, availability, photos, etc.), and submits the search.
-
-        Args:
-            min_rent: Minimum rent filter (as a string, e.g., "500").
-            max_rent: Maximum rent filter (as a string, e.g., "1200").
         """
         # Fill input boxes
         self._fill_element(selector='#search_by_location_field', value="London")
-        self._fill_element(selector='#min-rent', value=min_rent)
-        self._fill_element(selector='#max-rent', value=max_rent)
+        self._fill_element(selector='#min-rent', value=str(min_rent))
+        self._fill_element(selector='#max-rent', value=str(max_rent))
 
         # Check boxes
         self.page.evaluate("""document.getElementById('oneBedOrStudio').checked = false;""")

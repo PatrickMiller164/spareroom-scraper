@@ -1,5 +1,5 @@
 from playwright.sync_api import sync_playwright
-from src.logger_config import logger
+from src.utils.logger_config import logger
 
 
 class PlaywrightSession:

@@ -5,7 +5,7 @@ from typing import Optional
 @dataclass
 class Room:
     status: str = ""
-    url: str = None
+    url: str = ''
     id: Optional[str] = None
     date_added: date = date.today()
     title: Optional[str] = None
@@ -33,3 +33,24 @@ class Room:
     total_number_of_rooms: Optional[int] = None
     room_sizes: Optional[list] = None
     image_url: Optional[str] = None
+
+
+@dataclass(frozen=True)
+class PipelineConfig:
+    check_for_expired_rooms: bool
+    headless: bool
+    number_of_pages: int
+    min_rent: int
+    max_rent: int
+    output_path: str
+    database_path: str
+    ignored_ids_path: str
+    favourite_ids_path: str
+    domain: str
+
+    def __post_init__(self):
+        if self.number_of_pages < 1:
+            raise ValueError("number_of_pages must be >= 1")
+        
+        if self.min_rent > self.max_rent:
+            raise ValueError("min_rent cannot exceed max_rent")

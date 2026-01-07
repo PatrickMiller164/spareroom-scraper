@@ -2,8 +2,8 @@ import requests
 import os
 from dotenv import load_dotenv
 from collections import namedtuple
-from src.logger_config import logger
-from src.utils import get_last_tuesday_9am
+from src.utils.logger_config import logger
+from src.utils.utils import get_last_tuesday_9am
 
 load_dotenv()
 

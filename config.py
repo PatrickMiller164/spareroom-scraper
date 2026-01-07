@@ -1,10 +1,14 @@
 CONFIG = {
     "check_for_expired_rooms": False,
-    "headless": False,
+    "headless": True,
     "number_of_pages": 1,
-    "min_rent": "200",
-    "max_rent": "1000",
-    "filename": "database.xlsx",
+    "min_rent": 200,
+    "max_rent": 1000,
+    "output_path": "output/database.xlsx",
+    "database_path": "data/rooms.pkl",
+    "ignored_ids_path": "data/ignored_ids.json",
+    "favourite_ids_path": "data/favourite_ids.json",
+    "domain": "https://www.spareroom.co.uk"
 }
 
 MAP_SETTINGS = {

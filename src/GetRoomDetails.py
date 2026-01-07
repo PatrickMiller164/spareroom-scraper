@@ -1,11 +1,11 @@
 from bs4 import BeautifulSoup
 import re
-from src.logger_config import logger
+from src.utils.logger_config import logger
 from src.lists import jubilee_stations, elizabeth_line_stations
 from dataclasses import fields
-from src.utils import clean_string, string_to_number
+from src.utils.utils import clean_string, string_to_number, get_id_from_url
 from src.CommuteService import CommuteService, Location
-from src.Room import Room
+from src.utils.types import Room
 
 cs = CommuteService()
 if cs.API_KEY is None:
@@ -20,10 +20,10 @@ if cs.L2.latitude is None or cs.L2.longitude is None:
     logger.warning("Ensure both L2_LAT and L2_LON are defined in the .env file")
 
 
-class GetRoomInfo:
+class GetRoomDetails:
     room: Room
     
-    def __init__(self, url: str, page, domain: str) -> None:
+    def __init__(self, url: str, page) -> None:
         """Parse a room listing page and construct a Room object.
 
         Fetches and parses the room listing HTML, extracts relevant listing details,
@@ -31,13 +31,12 @@ class GetRoomInfo:
         dataclass instance from the extracted data.
 
         Args:
-            url: Relative URL of the room listing.
+            url: URL of the room listing.
             page: Browser page or session used to fetch listing content.
-            domain: Base domain used to construct the full listing URL.
         """
+        self.url = url
         self.page = page
-        self.url = domain + url
-        self.id = url.split("=")[1].split("&")[0]
+        self.id = get_id_from_url(url=self.url)
         self._get_room_soup()
 
         # Start building a dictionary of room properties

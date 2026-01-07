@@ -61,9 +61,9 @@ MAIN = {
     "check_for_expired_rooms": False,  # Filters out expired listings from database
     "headless": True,				# Enables/Disables the browser when scraping
     "number_of_pages": 1,           # Number of pages to scrape. There are 10 results per page, sorted by most recently added
-    "min_rent": "200",      	    # Minimum rent parameter
-    "max_rent": "900",			    # Maximum rent parameter
-    "filename": "database.xlsx",	# Output filename (must be a .xlsx file)
+    "min_rent": 200,      	    # Minimum rent parameter
+    "max_rent": 900,			    # Maximum rent parameter
+    "output_path": "database.xlsx",	# Output path, must be a .xlsx file
 }
 ```
 

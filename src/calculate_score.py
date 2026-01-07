@@ -1,7 +1,7 @@
 from config import SCORE_WEIGHTINGS
-from src.utils import normalise, string_to_number
-from src.logger_config import logger
-from src.Room import Room
+from src.utils.utils import normalise, string_to_number
+from src.utils.logger_config import logger
+from src.utils.types import Room
 
 def get_score(room: Room) -> float:
     """Calculate the room's score
