@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import re
 from src.utils.logger_config import logger
 from dataclasses import fields
-from src.utils.utils import clean_string, string_to_number, get_id_from_url
+import src.utils.utils as ut
 from src.CommuteService import CommuteService, Location
 from src.utils.types import Room
 
@@ -51,7 +51,7 @@ class GetRoomDetails:
         """
         self.url = url
         self.page = page
-        self.id = get_id_from_url(url=self.url)
+        self.id = ut.get_id_from_url(url=self.url)
         self._get_room_soup()
 
         # Start building a dictionary of room properties
@@ -159,7 +159,7 @@ class GetRoomDetails:
         for key, value in room_data.items():
 
             if "£" in key and "double" in value:
-                price = string_to_number(key)
+                price = ut.string_to_number(key)
                 if 'pw' in key:
                     price = price * 52 / 12
 
@@ -167,7 +167,7 @@ class GetRoomDetails:
                 room_sizes.append("double")
 
             elif "deposit" in key:
-                deposit = string_to_number(value)
+                deposit = ut.string_to_number(value)
                 deposits.append(deposit)
 
         if len(prices) > 0:
@@ -231,9 +231,9 @@ class GetRoomDetails:
     def _check_station(self, station: str) -> str:
         if station is None:
             return 'No'
-        station = clean_string(station)
+        station = ut.clean_string(station)
         list = jubilee_stations + elizabeth_line_stations
-        list = [clean_string(i) for i in list]
+        list = [ut.clean_string(i) for i in list]
         return 'Yes' if station in list else 'No'
 
     def _get_image_url(self) -> str:

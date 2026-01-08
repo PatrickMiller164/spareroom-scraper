@@ -1,5 +1,5 @@
 from config import SCORE_WEIGHTINGS
-from src.utils.utils import normalise, string_to_number
+import src.utils.utils as ut
 from src.utils.logger_config import logger
 from src.utils.types import Room
 
@@ -65,11 +65,11 @@ def get_score(room: Room) -> float:
         else:
             logger.debug(f"Attempting to parse val from {m}")
             if isinstance(val, str):
-                val = string_to_number(val)
+                val = ut.string_to_number(val)
             if val:
                 min = range_keys[m][0]
                 max = range_keys[m][1]
-                c_val = normalise(val, min, max)
+                c_val = ut.normalise(val, min, max)
                 metric_scores[m] = c_val
             else:
                 logger.debug(f"When calculating score, {m}={val} couldn't be assigned a value")

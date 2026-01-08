@@ -1,5 +1,5 @@
 import pytest
-from src.utils import normalise
+from src.utils.utils import normalise
 
 @pytest.mark.parametrize(
     "input, expected",

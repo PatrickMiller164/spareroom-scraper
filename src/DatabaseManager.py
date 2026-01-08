@@ -4,7 +4,7 @@ import json
 import polars as pl
 from src.utils.logger_config import logger
 from src.utils.types import Room
-from src.utils.utils import flush_print
+import src.utils.utils as ut
 from playwright.sync_api import Page
 
 VALID_STATUSES = {"favourite", "ignore"}
@@ -85,7 +85,7 @@ class DatabaseManager:
         valid_rows = []
 
         for i, room in enumerate(self.database, start=1):
-            flush_print(i, self.database, "Checking room still exists")
+            ut.flush_print(i, self.database, "Checking room still exists")
 
             try:
                 page.goto(room.url, timeout=10000)

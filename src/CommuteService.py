@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from collections import namedtuple
 from src.utils.logger_config import logger
-from src.utils.utils import get_last_tuesday_9am
+import src.utils.utils as ut
 
 load_dotenv()
 
@@ -15,7 +15,7 @@ L1_LON = os.getenv("L1_LON")
 L2_LAT = os.getenv("L2_LAT")
 L2_LON =os.getenv("L2_LON")
 
-last_tuesday = get_last_tuesday_9am()
+last_tuesday = ut.get_last_tuesday_9am()
 
 URL = "https://routes.googleapis.com/directions/v2:computeRoutes"
 

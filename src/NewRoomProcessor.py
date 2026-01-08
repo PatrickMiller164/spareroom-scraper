@@ -1,4 +1,4 @@
-from src.utils.utils import flush_print, get_id_from_url
+import src.utils.utils as ut
 from src.GetRoomDetails import GetRoomDetails
 from src.calculate_score import get_score
 from src.utils.logger_config import logger
@@ -15,7 +15,7 @@ class NewRoomProcessor:
         return [
             url
             for url in room_urls
-            if (room_id := get_id_from_url(url)) not in existing_ids
+            if (room_id := ut.get_id_from_url(url)) not in existing_ids
             and room_id not in ignored_ids
         ]
 
@@ -23,7 +23,7 @@ class NewRoomProcessor:
         logger.info(f"Processing {len(room_urls)} new rooms")
         print()
         for i, url in enumerate(room_urls, start=1):
-            flush_print(i, room_urls, "Processing new rooms")
+            ut.flush_print(i, room_urls, "Processing new rooms")
 
             url = f"{self.domain}/{url}"
             room_obj = GetRoomDetails(url=url, page=page)
