@@ -4,41 +4,33 @@ from src.utils.logger_config import logger
 from src.utils.types import Room
 
 def get_score(room: Room) -> float:
-    """Calculate the room's score
+    """Calculate a composite score for a room.
 
-    Discrete metrics are normalised according to the defined GOOD_VALS and BAD_VALS.
-    Continuous metrics are normalised according to the min and max values in range_keys.
-    Once we have value between 0 and 1 for each metric, a composite is calculated
-    according to the user's relative preferences (SCORE_WEIGHTINGS in config.py)
+    Each room attribute is converted into a normalised score between 0 and 1.
+    Boolean metrics are scored as 1.0 (True) or 0.0 (False).
+    Range-based metrics are normalised using predefined minimum and maximum values.
+    Any missing or unhandled metrics contribute a score of 0.
+
+    The final room score is calculated as a weighted sum of all metric scores,
+    using the relative preferences defined in SCORE_WEIGHTINGS (config.py).
 
     Args:
-        room: A populated Room object containing all properties to score the room.
+        room: A populated Room instance containing the attributes used for scoring.
 
     Returns:
-        The room score (rounded to 1 DP)
+        The final room score, rounded to one decimal place.
     """
+    BOOL_METRICS = {
+        "direct_line_to_office",
+        "bills_included",       
+        "broadband_included",
+        "furnishings",
+        "garden_or_patio",
+        "living_room",
+        "balcony_or_rooftop_terrace",
+    }
 
-    # Get metrics from room dictionary
-    metrics = [
-        "direct_line_to_office",        # Yes/No
-        "location_1",                   # Int
-        "location_2",                   # Int
-        "minimum_term",                 # Int   
-        "bills_included",               # Yes/Some/No
-        "broadband_included",           # Yes/No
-        "furnishings",                  # Unfurnished/Furnished
-        "garden_or_patio",              # Yes/No
-        "living_room",                  # No/Shared
-        "balcony_or_rooftop_terrace",   # No/Yes
-        "total_number_of_rooms",        # Int    
-        "average_price"                 # Int
-    ]
-
-    GOOD_VALS = ['Furnished', 'Yes', 'shared', 'Some']
-    BAD_VALS = ['Unfurnished', 'No']
-
-    # Calculate range scores
-    range_keys = {
+    RANGE_METRICS = {
         "location_1": (20, 60),
         "location_2": (20, 60),
         "minimum_term": (0, 12),
@@ -46,34 +38,39 @@ def get_score(room: Room) -> float:
         "average_price": (700, 1000),
     }
 
-    metric_scores = {}
-    for m in metrics:
+    metric_scores: dict[str, float] = {}
 
-        val = getattr(room, m, None)
+    for metric, _ in SCORE_WEIGHTINGS.items():
+        val = getattr(room, metric, None)
+
+        # Missing value
         if val is None:
-            metric_scores[m] = 0
+            metric_scores[metric] = 0
             continue
 
-        if val in GOOD_VALS:
-            logger.debug(f"Giving {m},{val} a score of 1")
-            metric_scores[m] = 1
+        # Boolean metric
+        if metric in BOOL_METRICS:
+            metric_scores[metric] = 1.0 if val is True else 0.0
+            continue
 
-        elif val in BAD_VALS:
-            logger.debug(f"Giving {m},{val} a score of 0")
-            metric_scores[m] = 0
-
-        else:
-            logger.debug(f"Attempting to parse val from {m}")
+        # Range-based metric
+        if metric in RANGE_METRICS:
             if isinstance(val, str):
                 val = ut.string_to_number(val)
-            if val:
-                min = range_keys[m][0]
-                max = range_keys[m][1]
-                c_val = ut.normalise(val, min, max)
-                metric_scores[m] = c_val
-            else:
-                logger.debug(f"When calculating score, {m}={val} couldn't be assigned a value")
-                metric_scores[m] = 0
+
+            if val is None:
+                metric_scores[metric] = 0
+                continue
+
+            min_v, max_v = RANGE_METRICS[metric]
+            metric_scores[metric] = ut.normalise(val, min_v, max_v)
+            continue
+
+        logger.warning(f"Unhandled metric: {metric}")
+        metric_scores[metric] = 0
 
     # Use relative weightings to calculate composite
-    return round(sum(v * SCORE_WEIGHTINGS[k] for k, v in metric_scores.items()), 1)
+    return round(
+        sum(metric_scores[m] * SCORE_WEIGHTINGS[m] for m in metric_scores),
+        1
+    )
