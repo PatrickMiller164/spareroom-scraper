@@ -1,36 +1,33 @@
-import requests
 import os
+import requests
 from dotenv import load_dotenv
-from collections import namedtuple
-from src.utils.logger_config import logger
 import src.utils.utils as ut
-
-load_dotenv()
-
-API_KEY = os.getenv("GOOGLE_API_KEY")
-
-L1_LAT = os.getenv("L1_LAT")
-L1_LON = os.getenv("L1_LON")
-
-L2_LAT = os.getenv("L2_LAT")
-L2_LON =os.getenv("L2_LON")
-
-last_tuesday = ut.get_last_tuesday_9am()
+from src.utils.types import coordinates
+from src.utils.logger_config import logger
 
 URL = "https://routes.googleapis.com/directions/v2:computeRoutes"
 
-Location = namedtuple('Location', ['latitude', 'longitude'], defaults=[None, None])
 
 class CommuteService:
     def __init__(self) -> None:
         """Initiliase the commute service"""
-        self.API_KEY = API_KEY
-        self._last_tuesday = last_tuesday
-        self.L1 = Location(L1_LAT, L1_LON)
-        self.L2 = Location(L2_LAT, L2_LON)
+        load_dotenv()
+
+        self.API_KEY = os.getenv("GOOGLE_API_KEY")
+        self.L1 = coordinates(latitude=os.getenv("L1_LAT"), longitude=os.getenv("L1_LON"))
+        self.L2 = coordinates(latitude=os.getenv("L2_LAT"), longitude=os.getenv("L2_LON"))
+
+        if self.API_KEY is None:
+            logger.warning("Skipping CommuteService: GOOGLE_API_KEY not found in .env")
+        if not (self.L1.latitude and self.L1.longitude):
+            logger.warning("Skipping commute service for location 1: L1_LAT or L1_LON missing in .env")
+        if not (self.L2.latitude and self.L2.longitude):
+            logger.warning("Skipping commute service for location 2: L2_LAT or L2_LON missing in .env")
+        
+        self._last_tuesday = ut.get_last_tuesday_9am()
         self._session = requests.Session()
 
-    def get_commute(self, id: str, start: Location, end: Location) -> str:
+    def get_commute(self, id: str, start: coordinates, end: coordinates) -> str:
         """Gets public transport commute time between start and end location.
 
         Start location is the room's location. End location is self.L1 or self.L2, which are 
@@ -50,7 +47,7 @@ class CommuteService:
         r = self._get_response(start, end)
         return self._parse_response(id=id, response=r)
 
-    def _get_response(self, start: Location, end: Location) -> requests.models.Response:
+    def _get_response(self, start: coordinates, end: coordinates) -> requests.models.Response:
         headers = {
             "Content-Type": "application/json",
             "X-Goog-Api-Key": self.API_KEY,
