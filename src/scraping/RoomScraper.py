@@ -31,6 +31,9 @@ class RoomScraper:
         # Get room coordinates and location
         room_data['coordinates'] = self._get_location()
 
+        # Get poster type
+        room_data['poster_type'] = self._get_poster_type()
+
         return room_data
 
     def _get_room_soup(self) -> BeautifulSoup:
@@ -106,3 +109,6 @@ class RoomScraper:
             logger.warning("Location not found")
         return coordinates()
         
+    def _get_poster_type(self) -> str:
+        poster_type_el = self.soup.select_one(".advertiser-info em")
+        return self._get_text(poster_type_el)

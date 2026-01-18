@@ -42,6 +42,8 @@ class Room:
     score: Optional[float] = None
     image_url: str = ""
 
+    poster_type: str = ""
+
 
 @dataclass(frozen=True)
 class PipelineConfig:
