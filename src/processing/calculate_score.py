@@ -36,6 +36,7 @@ def get_score(room: Room) -> float:
         "minimum_term": (0, 12),
         "total_number_of_rooms": (2, 6),
         "average_price": (700, 1000),
+        "collective_word_count": (0, 7)
     }
 
     metric_scores: dict[str, float] = {}
@@ -63,7 +64,8 @@ def get_score(room: Room) -> float:
                 continue
 
             min_v, max_v = RANGE_METRICS[metric]
-            metric_scores[metric] = ut.normalise(val, min_v, max_v)
+            invert = True if metric != 'collective_word_count' else False
+            metric_scores[metric] = ut.normalise(val, min_v, max_v, invert=invert)  
             continue
 
         logger.warning(f"Unhandled metric: {metric}")

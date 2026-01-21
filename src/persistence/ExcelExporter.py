@@ -4,9 +4,9 @@ from src.utils.logger_config import logger
 from dataclasses import asdict
 
 output_cols = [
-    "status", "id", "url", "poster_type", "date_added", "type", "area", "score", "average_price", "average_deposit",
-    "location_1", "location_2", "direct_line_to_office", "location",
-    "nearest_station", "available", "minimum_term", "maximum_term", "bills_included",
+    "status", "id", "url", "poster_type", "date_added", "type", "area", "score", "collective_word_count", 
+    "average_price", "average_deposit", "location_1", "location_2", "direct_line_to_office", 
+    "location", "nearest_station", "available", "minimum_term", "maximum_term", "bills_included",
     "broadband_included", "furnishings", "garden_or_patio", "living_room",
     "balcony_or_roof_terrace", "number_of_flatmates", "total_number_of_rooms"
 ]

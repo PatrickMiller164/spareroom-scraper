@@ -14,6 +14,7 @@ class RoomScraper:
         self.page = page
         self.url = url
         self.soup: BeautifulSoup = self._get_room_soup()
+        #print(self.soup)
 
     def scrape_data(self) -> Dict[str, Any]:
         """Initialise room_data dictionary and scrape info from HTML"""
@@ -33,6 +34,9 @@ class RoomScraper:
 
         # Get poster type
         room_data['poster_type'] = self._get_poster_type()
+
+        # Get We Count
+        room_data['collective_word_count'] = self._get_collective_word_count()
 
         return room_data
 
@@ -112,3 +116,17 @@ class RoomScraper:
     def _get_poster_type(self) -> str:
         poster_type_el = self.soup.select_one(".advertiser-info em")
         return self._get_text(poster_type_el)
+
+    def _get_collective_word_count(self) -> int:
+        element = self.soup.select_one("p.detaildesc")
+        text = self._get_text(element)
+
+        words = text.split(" ")
+
+        COLLECTIVE_WORDS = {
+            "we", "us", "our", "ours",
+            "together", "household", "home",
+            "shared", "sharing"
+        }
+        collective_words = [w for w in words if w in COLLECTIVE_WORDS]
+        return len(collective_words)

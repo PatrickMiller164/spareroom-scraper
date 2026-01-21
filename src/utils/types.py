@@ -43,6 +43,7 @@ class Room:
     image_url: str = ""
 
     poster_type: str = ""
+    collective_word_count: int = 0
 
 
 @dataclass(frozen=True)
