@@ -13,21 +13,30 @@ def flush_print(i: int, list: list, msg: str) -> None:
     print(f"\r{msg}: {i}/{len(list)}.", end="", flush=True)
 
 
-def normalise(x: int, min: int, max: int) -> float:
-    """Normalize a value to a 0–1 scale, inverted.
+def normalise(x: int, min: int, max: int, invert: bool = False) -> float:
+    """Normalize a value to a 0–1 scale.
 
-    Maps `x` from the range [`min`, `max`] to a float between 0 and 1,
-    where `min` maps to 1.0 and `max` maps to 0.0.
+    Maps `x` from the range [`min_val`, `max_val`] to a float between 0 and 1.
+
+    - invert = False:
+        min_val → 0.0, max_val → 1.0
+    - invert = True:
+        min_val → 1.0, max_val → 0.0
 
     Args:
         x: Value to normalize.
-        min: Minimum of the original range.
-        max: Maximum of the original range.
+        min_val: Minimum of the original range.
+        max_val: Maximum of the original range.
+        invert: Whether to invert the scale.
 
     Returns:
         Normalized value between 0.0 and 1.0.
     """
-    return 1 - ((x - min) / (max - min))
+    if min == max:
+        return 0.0
+
+    normalised_val = ((x - min) / (max - min))
+    return 1 - normalised_val if invert else normalised_val
 
 
 def clean_string(s: str) -> str:
