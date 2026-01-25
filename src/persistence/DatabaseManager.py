@@ -3,12 +3,11 @@ import pickle
 import json
 import polars as pl
 from src.utils.logger_config import logger
+from config import IGNORE_KEYWORDS, FAVOURITE_KEYWORDS
 from src.utils.types import Room
 import src.utils.utils as ut
 from playwright.sync_api import Page
-
-VALID_STATUSES = {"favourite", "ignore"}
-
+ 
 class DatabaseManager:
     def __init__(
         self, 
@@ -52,21 +51,21 @@ class DatabaseManager:
     
         # Validate statuses
         for room_id, status in tuples:
-            if status and status.lower() not in VALID_STATUSES:
-                logger.warning(f"room with id: {room_id} has invalid status: {status}")
+            if status and status.lower() not in (IGNORE_KEYWORDS + FAVOURITE_KEYWORDS):
+                logger.warning(f"room with id: {room_id} had an invalid status: {status}")
 
         return tuples
 
     def _update_id_lists(self, tuples) -> None:
         configs = [
-            ('ignored', self.ignored_ids_path, 'ignore'),
-            ('favourites', self.favourite_ids_path, 'favourite')
+            ('ignored', self.ignored_ids_path, IGNORE_KEYWORDS),
+            ('favourites', self.favourite_ids_path, FAVOURITE_KEYWORDS)
         ]
-        for attr, path, keyword in configs:
+        for attr, path, keywords in configs:
             current_id_list = getattr(self, attr)
             new_ids = [
                 room_id for room_id, status in tuples 
-                if status and status.lower()==keyword and room_id not in current_id_list
+                if status and status.lower() in keywords and room_id not in current_id_list
             ]
             if new_ids:
                 logger.info(f"Added to {attr} list: {new_ids}")

@@ -1,7 +1,7 @@
 CONFIG = {
     "check_for_expired_rooms": False,
     "headless": True,
-    "number_of_pages": 10,
+    "number_of_pages": 1,
     "min_rent": 200,
     "max_rent": 1000,
     "output_path": "output/database.xlsx",
@@ -11,11 +11,17 @@ CONFIG = {
     "domain": "https://www.spareroom.co.uk"
 }
 
-MAP_SETTINGS = {
-    "show_favourites": True,
-    "show_new_listings": True,
-    "min_score": 15,
-}
+IGNORE_KEYWORDS = [
+    "ignore",
+    "delete",
+    "d"
+]
+
+FAVOURITE_KEYWORDS = [
+    "favourite",
+    "keep",
+    "f"
+]
 
 SCORE_WEIGHTINGS = {
     "direct_line_to_office": 1,
@@ -33,4 +39,10 @@ SCORE_WEIGHTINGS = {
     "furnishings": 2,
     "collective_word_count": 8,
     "preferable_poster_type": 5 
+}
+
+MAP_SETTINGS = {
+    "show_favourites": True,
+    "show_new_listings": True,
+    "min_score": 15,
 }
