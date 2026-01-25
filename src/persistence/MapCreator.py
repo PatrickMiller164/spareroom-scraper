@@ -57,27 +57,24 @@ class CreateMap:
 
     def _create_and_add_popup(self, rooms: list[Room], icon_url: str) -> None:
         for room in rooms:
+            if not room.location:
+                continue
+
             location = tuple(map(float, room.location.split(",")))
-            score = room.score
-            price = room.average_price
-            url = room.url
-            id = room.id
-            date_added = room.date_added
-            image_url = room.image_url
 
             popup_html = f"""
-            <b>ID:</b> {id}<br>
-            <b>Date added:</b> {date_added}<br>
-            <b>Score:</b> {score}<br>
-            <b>Price:</b> {price}<br>
-            <a href="{url} target="_blank">View room</a>
+            <b>ID:</b> {room.id}<br>
+            <b>Date added:</b> {room.date_added}<br>
+            <b>Score:</b> {room.score}<br>
+            <b>Price:</b> {room.average_price}<br>
+            <a href="{room.url} target="_blank">View room</a>
             """
 
-            if image_url:
-                popup_html += f'<br><img src="{image_url}" width="100">'
+            if room.image_url:
+                popup_html += f'<br><img src="{room.image_url}" width="100">'
 
             icon = CustomIcon(icon_image=icon_url, icon_size=(18, 27))
-
+            
             folium.Marker(
                 location=location,
                 radius=5,
