@@ -8,8 +8,8 @@ coordinates = namedtuple('Location', ['latitude', 'longitude'], defaults=[None, 
 @dataclass
 class Room:
     status: str = ""
-    url: str = ''
-    id: Optional[str] = None
+    url: str = ""
+    id: Optional[str] = ""
     date_added: date = date.today()
     
     type: Optional[str] = None
@@ -44,6 +44,7 @@ class Room:
 
     poster_type: str = ""
     collective_word_count: int = 0
+    preferable_poster_type: bool = False
 
 
 @dataclass(frozen=True)

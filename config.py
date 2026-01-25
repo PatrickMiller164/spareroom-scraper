@@ -1,7 +1,7 @@
 CONFIG = {
     "check_for_expired_rooms": False,
     "headless": True,
-    "number_of_pages": 1,
+    "number_of_pages": 10,
     "min_rent": 200,
     "max_rent": 1000,
     "output_path": "output/database.xlsx",
@@ -30,5 +30,7 @@ SCORE_WEIGHTINGS = {
     "total_number_of_rooms": 2,
     "gender": 1,
     "average_price": 5,
-    "furnishings": 2
+    "furnishings": 2,
+    "collective_word_count": 8,
+    "preferable_poster_type": 5 
 }

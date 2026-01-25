@@ -41,6 +41,9 @@ class RoomEnricher:
         if self.cs.L2.latitude and self.cs.L2.longitude:
             room_data['location_2'] = self.cs.get_commute(id=room_data['id'], start=coords, end=self.cs.L2)
 
+        if 'flatmate' in room_data['poster_type']:
+            room_data['preferable_poster_type'] = True
+
         return room_data
 
     def _check_station(self, station: str) -> bool:

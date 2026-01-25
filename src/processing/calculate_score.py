@@ -28,6 +28,7 @@ def get_score(room: Room) -> float:
         "garden_or_patio",
         "living_room",
         "balcony_or_rooftop_terrace",
+        "preferable_poster_type"
     }
 
     RANGE_METRICS = {
@@ -63,6 +64,7 @@ def get_score(room: Room) -> float:
                 metric_scores[metric] = 0
                 continue
 
+            # A lower value is better for all metrics apart from collective_word_count
             min_v, max_v = RANGE_METRICS[metric]
             invert = True if metric != 'collective_word_count' else False
             metric_scores[metric] = ut.normalise(val, min_v, max_v, invert=invert)  
