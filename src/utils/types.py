@@ -47,7 +47,7 @@ class Room:
     preferable_poster_type: bool = False
 
 
-@dataclass(frozen=True)
+@dataclass()
 class PipelineConfig:
     check_for_expired_rooms: bool
     headless: bool

@@ -1,7 +1,7 @@
 CONFIG = {
     "check_for_expired_rooms": False,
     "headless": True,
-    "number_of_pages": 1,
+    "number_of_pages": 20,
     "min_rent": 200,
     "max_rent": 1000,
     "output_path": "output/database.xlsx",
