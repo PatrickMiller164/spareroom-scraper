@@ -59,10 +59,11 @@ class PipelineConfig:
     ignored_ids_path: str
     favourite_ids_path: str
     domain: str
+    update_database_only: bool
 
     def __post_init__(self):
-        if self.number_of_pages < 1:
-            raise ValueError("number_of_pages must be >= 1")
+        if self.number_of_pages < 0:
+            raise ValueError("number_of_pages must be >= 0")
         
         if self.min_rent > self.max_rent:
             raise ValueError("min_rent cannot exceed max_rent")

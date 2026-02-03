@@ -42,16 +42,17 @@ class Pipeline:
             db_manager.update_database(page=page)
 
             # Search Spareroom, and get room urls
-            search = SpareRoomSearcher(page=page, domain=self.config.domain)
-            search.run(min_rent=self.config.min_rent, max_rent=self.config.max_rent)
+            if self.config.number_of_pages > 0:
+                search = SpareRoomSearcher(page=page, domain=self.config.domain)
+                search.run(min_rent=self.config.min_rent, max_rent=self.config.max_rent)
 
-            scraper = SpareRoomScraper(page=page, domain=self.config.domain)
-            room_urls = scraper.collect_room_urls(pages=self.config.number_of_pages)
+                scraper = SpareRoomScraper(page=page, domain=self.config.domain)
+                room_urls = scraper.collect_room_urls(pages=self.config.number_of_pages)
 
-            # Process new rooms and add to database
-            processor = NewRoomProcessor(db_manager=db_manager,domain=self.config.domain)
-            new_urls = processor.filter_new_rooms(room_urls=room_urls)
-            processor.process_new_rooms(page=page, room_urls=new_urls)
+                # Process new rooms and add to database
+                processor = NewRoomProcessor(db_manager=db_manager,domain=self.config.domain)
+                new_urls = processor.filter_new_rooms(room_urls=room_urls)
+                processor.process_new_rooms(page=page, room_urls=new_urls)
 
             # Save database as pickle object
             db_manager.save()

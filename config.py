@@ -8,7 +8,8 @@ CONFIG = {
     "database_path": "data/rooms.pkl",
     "ignored_ids_path": "data/ignored_ids.json",
     "favourite_ids_path": "data/favourite_ids.json",
-    "domain": "https://www.spareroom.co.uk"
+    "domain": "https://www.spareroom.co.uk",
+    "update_database_only": False 
 }
 
 IGNORE_KEYWORDS = [
