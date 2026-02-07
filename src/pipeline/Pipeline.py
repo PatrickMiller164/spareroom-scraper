@@ -36,7 +36,8 @@ class Pipeline:
                 check_for_expired_rooms=self.config.check_for_expired_rooms,
                 output_path=self.config.output_path,
                 ignored_ids_path=self.config.ignored_ids_path,
-                favourite_ids_path=self.config.favourite_ids_path
+                favourite_ids_path=self.config.favourite_ids_path,
+                messaged_ids_path=self.config.messaged_ids_path
             )
             db_manager.load()
             db_manager.update_database(page=page)

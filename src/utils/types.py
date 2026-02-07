@@ -58,6 +58,7 @@ class PipelineConfig:
     database_path: str
     ignored_ids_path: str
     favourite_ids_path: str
+    messaged_ids_path: str
     domain: str
     update_database_only: bool
 

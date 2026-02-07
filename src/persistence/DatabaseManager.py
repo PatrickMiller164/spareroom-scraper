@@ -3,7 +3,7 @@ import pickle
 import json
 import polars as pl
 from src.utils.logger_config import logger
-from config import IGNORE_KEYWORDS, FAVOURITE_KEYWORDS
+from config import IGNORE_KEYWORDS, FAVOURITE_KEYWORDS, MESSAGED_KEYWORDS
 from src.utils.types import Room
 import src.utils.utils as ut
 from playwright.sync_api import Page
@@ -15,22 +15,27 @@ class DatabaseManager:
         database_path: str, 
         output_path: str,
         ignored_ids_path: str,
-        favourite_ids_path: str
+        favourite_ids_path: str,
+        messaged_ids_path: str
+
     ):
         self.check_for_expired_rooms = check_for_expired_rooms
         self.database_path = database_path
         self.output_path = output_path
         self.ignored_ids_path = ignored_ids_path
         self.favourite_ids_path = favourite_ids_path
+        self.messaged_ids_path = messaged_ids_path
 
         self.database: list[Room] = []
         self.ignored: set[str] = set()
         self.favourites: set[str] = set()
+        self.messaged: set[str] = set()
 
     def load(self) -> None:
         self.database = DatabaseManager._read_pickle_file(path=self.database_path)
         self.ignored = set(self._read_json_file(self.ignored_ids_path))
         self.favourites = set(self._read_json_file(self.favourite_ids_path))
+        self.messaged = set(self._read_json_file(self.messaged_ids_path))
 
     def update_database(self, page: Page) -> None:
         if self.check_for_expired_rooms:
@@ -51,7 +56,7 @@ class DatabaseManager:
     
         # Validate statuses
         for room_id, status in tuples:
-            if status and status.lower() not in (IGNORE_KEYWORDS + FAVOURITE_KEYWORDS):
+            if status and status.lower() not in (IGNORE_KEYWORDS + FAVOURITE_KEYWORDS + MESSAGED_KEYWORDS):
                 logger.warning(f"room with id: {room_id} had an invalid status: {status}")
 
         return tuples
@@ -59,7 +64,8 @@ class DatabaseManager:
     def _update_id_lists(self, tuples) -> None:
         configs = [
             ('ignored', self.ignored_ids_path, IGNORE_KEYWORDS),
-            ('favourites', self.favourite_ids_path, FAVOURITE_KEYWORDS)
+            ('favourites', self.favourite_ids_path, FAVOURITE_KEYWORDS),
+            ('messaged', self.messaged_ids_path, MESSAGED_KEYWORDS)
         ]
         for attr, path, keywords in configs:
             current_id_list = getattr(self, attr)
@@ -73,11 +79,19 @@ class DatabaseManager:
                 self._write_json_file(path=path, data=sorted(current_id_list))    
 
     def _apply_statuses_to_database(self) -> None:
-        # Remove ignored rooms from database and update status of favourited rooms
+        """Remove ignored rooms from database and update status of favourited rooms
+        
+        When applying statuses to each room id, we use two if-statements instead of one
+        elif statement so that a room with an id in favourites and messaged will show messaged.
+        Correct approach if room was first saved as a favourite, and then later on status changed to Messaged.
+        """
         self.database = [room for room in self.database if room.id not in self.ignored]
         for room in self.database:
             if room.id in self.favourites:
                 room.status = 'FAVOURITE'
+            
+            if room.id in self.messaged: 
+                room.status = 'MESSAGED'
 
     def _check_for_expired_rooms_from_database(self, page: Page) -> None:
         """Exclude listings that have been taken off Spareroom"""
