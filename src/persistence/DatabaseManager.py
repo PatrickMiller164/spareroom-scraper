@@ -93,6 +93,9 @@ class DatabaseManager:
             if room.id in self.messaged: 
                 room.status = 'MESSAGED'
 
+            if room.id not in self.favourites and room.id not in self.messaged:
+                room.status = ''
+
     def _check_for_expired_rooms_from_database(self, page: Page) -> None:
         """Exclude listings that have been taken off Spareroom"""
         valid_rows = []
