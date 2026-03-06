@@ -27,7 +27,7 @@ class SpareRoomSearcher:
         self.page.evaluate("""document.getElementById('wholeWeek').checked = true;""")
         self.page.evaluate("""document.getElementById('doubleRoom').checked = true;""")
         self.page.evaluate("""document.getElementById('adsWithPhoto').checked = true;""")
-        self.page.evaluate("""document.getElementById('liveOut').checked = true;""")
+        self.page.evaluate("""document.getElementById('privateLandlords').checked = true;""")
         self.page.evaluate("""document.querySelector('select[name="min_term"]').value = '6';""")
 
         # Search
@@ -38,4 +38,3 @@ class SpareRoomSearcher:
         self.page.wait_for_selector(selector)
         self.page.fill(selector, value)
         self.page.wait_for_timeout(500)
-
