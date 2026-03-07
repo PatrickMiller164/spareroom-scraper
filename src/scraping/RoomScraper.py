@@ -14,7 +14,11 @@ class RoomScraper:
         self.page = page
         self.url = url
         self.soup: BeautifulSoup = self._get_room_soup()
-        #print(self.soup)
+
+    def parse_sidebar(self) -> tuple[bool, bool]:
+        expired = self.soup.select_one('section.listing-contact--expired')
+        message = self.soup.select_one('ul.contact_methods')
+        return bool(expired), bool(message)
 
     def scrape_data(self) -> Dict[str, Any]:
         """Initialise room_data dictionary and scrape info from HTML"""

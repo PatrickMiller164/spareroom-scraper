@@ -7,6 +7,7 @@ from config import IGNORE_KEYWORDS, FAVOURITE_KEYWORDS, MESSAGED_KEYWORDS
 from src.utils.types import Room
 import src.utils.utils as ut
 from playwright.sync_api import Page
+from src.scraping.RoomScraper import RoomScraper
  
 class DatabaseManager:
     def __init__(
@@ -17,7 +18,6 @@ class DatabaseManager:
         ignored_ids_path: str,
         favourite_ids_path: str,
         messaged_ids_path: str
-
     ):
         self.check_for_expired_rooms = check_for_expired_rooms
         self.database_path = database_path
@@ -97,26 +97,37 @@ class DatabaseManager:
                 room.status = ''
 
     def _check_for_expired_rooms_from_database(self, page: Page) -> None:
-        """Exclude listings that have been taken off Spareroom"""
-        valid_rows = []
+        """Exclude listings that have been taken off Spareroom
+        
+        A listing is no longer available if:
+            - We can't access the page (expired=False, contactable=False) 
+            - We can access the page but can't contact (expired=True, contactable=False)
 
-        for i, room in enumerate(self.database, start=1):
-            ut.flush_print(i, self.database, "Checking room still exists")
+        Else, we keep the room in the database
+        """
+        rooms_still_listed = []
 
-            try:
-                page.goto(room.url, timeout=10000)
-            except Exception as e:
-                logger.warning(f"Failed to load {room.url}: {e}")
+        active_c = 0
+        expired_c = 0
+        total_c = len(self.database)
+
+        for room in self.database:
+            remaining = total_c - (active_c + expired_c)
+            print(f"\rACTIVE: {active_c}, EXPIRED: {expired_c}, REMAINING: {remaining}      ", end="", flush=True)
+
+            expired, contactable = RoomScraper(page, room.url).parse_sidebar()
+            if (expired or not expired) and not contactable:
+                expired_c += 1
                 continue
+            elif not expired and contactable:
+                active_c += 1
+                rooms_still_listed.append(room)
+            else:
+                logger.warning(f"{expired=}, {contactable=}, url={room.url}")
 
-            current_url = page.url
-            if room.url != current_url:
-                logger.debug(f"room {i} no longer found")
-                continue
+        logger.info(f"Removed {expired_c} rooms from the database.")
 
-            valid_rows.append(room)
-
-        self.database = valid_rows
+        self.database = rooms_still_listed
 
     @staticmethod
     def _read_pickle_file(path: str) -> list[Room]:
