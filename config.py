@@ -32,8 +32,8 @@ MESSAGED_KEYWORDS = [
 
 SCORE_WEIGHTINGS = {
     "direct_line_to_office": 1,
-    "location_1": 5,
-    "location_2": 4,
+    "location_1": 6,
+    "location_2": 6,
     "minimum_term": 1,
     "bills_included": 4,
     "broadband_included": 1,
@@ -45,7 +45,7 @@ SCORE_WEIGHTINGS = {
     "average_price": 5,
     "furnishings": 2,
     "collective_word_count": 8,
-    "preferable_poster_type": 5 
+    "preferable_poster_type": 1 
 }
 
 MAP_SETTINGS = {
