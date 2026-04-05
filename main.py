@@ -2,7 +2,6 @@ from src.pipeline.Pipeline import Pipeline
 from src.utils.logger_config import logger
 from src.utils.types import PipelineConfig
 from config import CONFIG
-from src.utils.test import test
 import argparse
 
 
